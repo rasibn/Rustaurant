@@ -1,6 +1,6 @@
 use std::time::Duration;
 use mongodb::options::Compressor;
-
+use dotenv::dotenv;
 pub struct DatabaseConfig {
     pub uri: String,
     pub connection_timeout: Option<Duration>,
@@ -11,6 +11,7 @@ pub struct DatabaseConfig {
 
 impl DatabaseConfig {
     pub fn new() -> Self {
+        dotenv().ok();
         let mongo_uri: String = std::env::var("MONGO_URI")
             .expect("Failed to load `MONGO_MAX_POOL_SIZE` environment variable.");
 

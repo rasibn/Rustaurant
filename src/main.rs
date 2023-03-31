@@ -5,6 +5,7 @@ use axum::{
     Router,
 };
 
+
 use mongodb::{
     options::ClientOptions,
     Client,
@@ -20,10 +21,12 @@ use tower_http::{
 mod handlers;
 mod structs;
 
+
 use structs::common::DatabaseConfig;
 use handlers::{
     common::{handler_404, root},
     handlers::create_user,
+    mflix::{list_users, user_by_id, user_by_name, user_by_email},
 };
 
 use std::net::SocketAddr;
@@ -47,10 +50,13 @@ async fn main() {
     let app = Router::new()
         .route("/", get(root)) // `GET /` goes to `root`
         .route("/users", post(create_user)) // `POST /users` goes to `create_user`
-        // timeout requests after 10 seconds, returning a 408 status code
-        .layer(TimeoutLayer::new(Duration::from_secs(10)))
-        //do not allow request bodies larger than 1024 bytes, returning 413 status code
-        .layer(RequestBodyLimitLayer::new(1024))
+        .route("/mflix/users/", get(list_users))
+        .route("/mflix/user/id/:id/", get(user_by_id))
+        .route("/mflix/user/name/:name/", get(user_by_name))
+        .route("/mflix/user/email/:email/", get(user_by_email))
+
+        .layer(TimeoutLayer::new(Duration::from_secs(10)))  // timeout requests after 10 seconds, returning a 408 status code
+        .layer(RequestBodyLimitLayer::new(1024))         //do not allow request bodies larger than 1024 bytes, returning 413 status code
         .layer(TraceLayer::new_for_http())
         .layer(SetResponseHeaderLayer::if_not_present(
             header::SERVER,
