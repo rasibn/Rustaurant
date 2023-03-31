@@ -5,10 +5,6 @@ use axum::{
     Json
 };
 
-// basic handler that responds with a static string
-pub async fn root() -> &'static str {
-    "Hello, World!"
-}
 
 pub async fn create_user(
     // this argument tells axum to parse the request body as JSON into a `CreateUser` type
