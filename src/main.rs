@@ -43,10 +43,8 @@ pub fn about() -> Html {
 fn switch(routes: Route) -> Html {
     match routes {
         Route::About => html! { <About /> },
-        Route::Home => html! { <Home />},
-        Route::Secure => html! {
-            <Secure />
-        },
+        Route::Home => html! { <Home /> },
+        Route::Secure => html! { <Secure /> },
         Route::NotFound => html! { <h1>{ "404" }</h1> },
     }
 }
