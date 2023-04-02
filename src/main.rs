@@ -25,7 +25,7 @@ mod structs;
 use structs::common::DatabaseConfig;
 use handlers::{
     common::{handler_404, root},
-    handlers::create_user,
+    user::create_user,
     mflix::{list_users, user_by_id, user_by_name, user_by_email},
 };
 

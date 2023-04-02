@@ -1,4 +1,4 @@
-use crate::structs::handlers::{CreateUser, User};
+use crate::structs::user::{CreateUser, User};
 
 use axum::{
     http::StatusCode,
