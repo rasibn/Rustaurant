@@ -1,6 +1,7 @@
 use std::time::Duration;
 use mongodb::options::Compressor;
 use dotenv::dotenv;
+
 pub struct DatabaseConfig {
     pub uri: String,
     pub connection_timeout: Option<Duration>,
