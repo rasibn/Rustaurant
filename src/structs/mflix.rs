@@ -20,7 +20,6 @@ pub struct Response {
 }
 
 #[skip_serializing_none]
-
 #[derive(Deserialize)]
 pub struct Pagination {
     pub page: i32,
