@@ -2,6 +2,14 @@ use yew::prelude::*;
 use yew_router::prelude::*;
 
 
+//import functional components from yew
+
+mod pages;
+
+use pages::{
+    about::About, home::Home, not_found::NotFound,
+};
+
 
 #[derive(Clone, Routable, PartialEq)]
 enum Route {
@@ -17,6 +25,25 @@ enum Route {
 
 }
 
+fn switch(routes: Route) -> Html {
+    match routes {
+        Route::About => html! { <About /> },
+        Route::Home => html! { <Home /> },
+        Route::Secure => html! { <Secure /> },
+        Route::NotFound => html! { <NotFound /> },
+    }
+}
+
+#[function_component(App)]
+fn app() -> Html {
+    html! {
+        <BrowserRouter>
+            <Switch<Route> render={switch} /> // <- must be child of <BrowserRouter>
+        </BrowserRouter>
+    }
+}
+
+
 #[function_component(Secure)]
 fn secure() -> Html {
     let navigator = use_navigator().unwrap();
@@ -30,34 +57,8 @@ fn secure() -> Html {
     }
 }
 
-#[function_component(Home)]
-pub fn home() -> Html {
-    html! { <h1>{"Welcome to my restaurant review app!"}</h1> }
-}
-
-#[function_component(About)]
-pub fn about() -> Html {
-    html! { <h1>{"About us"}</h1> }
-}
-
-fn switch(routes: Route) -> Html {
-    match routes {
-        Route::About => html! { <About /> },
-        Route::Home => html! { <Home /> },
-        Route::Secure => html! { <Secure /> },
-        Route::NotFound => html! { <h1>{ "404" }</h1> },
-    }
-}
-
-#[function_component(App)]
-fn app() -> Html {
-    html! {
-        <BrowserRouter>
-            <Switch<Route> render={switch} /> // <- must be child of <BrowserRouter>
-        </BrowserRouter>
-    }
-}
 
 fn main() {
     yew::Renderer::<App>::new().render();
 }
+
