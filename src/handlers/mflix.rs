@@ -19,11 +19,13 @@ use crate::structs::mflix::{Pagination, Response, SampleUser};
 
 pub async fn list_users(State(client): State<Client>, pagination: Query<Pagination>) -> impl IntoResponse {
     if let Err(message) = pagination.check() {
+        
         let response = Response {
             success: false,
             data: None,
             error_message: Some(message)
         };
+
         return (StatusCode::BAD_REQUEST, Json(response));
     }
 
