@@ -7,8 +7,19 @@ pub struct SampleUser {
     pub _id: ObjectId,
     pub name: String,
     pub email: String,
-//    #[serde(skip_deserializing)]
-//    password: String,
+    #[serde(skip_deserializing)]
+    pub password: String,
+}
+
+impl SampleUser {
+    pub fn new(name: String, email: String, password: String) -> Self {
+        Self {
+            _id: ObjectId::new(),
+            name,
+            email,
+            password,
+        }
+    }
 }
 
 #[skip_serializing_none]

@@ -5,6 +5,7 @@ use axum::{
     Json
 };
 use futures::stream::StreamExt;
+
 use mongodb::{
     bson::{Bson, doc, Document, oid::ObjectId},
     Client,
@@ -34,6 +35,7 @@ pub async fn list_users(State(client): State<Client>, pagination: Query<Paginati
     let users_coll: Collection<SampleUser> = client
         .database("sample_mflix")
         .collection::<SampleUser>("users");
+
     let mut options = FindOptions::default();
     options.limit = Some(pagination.per_page as i64);
     options.skip = Some((pagination.page as u64 - 1) * pagination.per_page as u64);
@@ -87,6 +89,78 @@ pub async fn user_by_email(State(client): State<Client>, email: Path<String>) ->
     fetch_user(client, doc! {
         "email": &user_email
     }).await
+}
+
+// todo
+pub async fn login(State(client): State<Client>, user: Json<SampleUser>) -> impl IntoResponse {
+
+    let users_coll: Collection<SampleUser> = client
+        .database("sample_mflix")
+        .collection::<SampleUser>("users");
+
+    let mut options = FindOneOptions::default();
+
+    options.projection = Some(doc! {
+        "name": 1,
+        "email": 1
+    });
+
+    let user = users_coll.find_one(doc! {
+        "email": &user.email,
+        "password": &user.password
+    }, options).await;
+
+
+    match user {
+        Ok(value) => {
+            match value {
+                Some(user) => {
+                    (StatusCode::FOUND, Json(Response {
+                        success: true,
+                        data: Some(vec![user]),
+                        error_message: None
+                    }))
+                },
+                None => {
+                    (StatusCode::NOT_FOUND, Json(Response {
+                        success: false,
+                        error_message: Some("No user exists for given filter.".to_owned()),
+                        data: None
+                    }))
+                }
+            }
+        },
+        Err(err) => {
+            (StatusCode::NOT_FOUND, Json(Response {
+                success: false,
+                error_message: Some(format!("Couldn't find any user due to {:#?}", err)),
+                data: None
+            }))
+        }
+    }
+}
+
+
+// todo: add signup
+pub async fn signup(State(client): State<Client>, user: Json<SampleUser>) -> impl IntoResponse {
+
+    let users_coll: Collection<SampleUser> = client
+        .database("sample_mflix")
+        .collection::<SampleUser>("users");
+
+    let mut options = FindOneOptions::default();
+
+    options.projection = Some(doc! {
+        "name": 1,
+        "email": 1
+    });
+
+    let user = users_coll.find_one(doc! {
+        "email": &user.email
+    }, options).await;
+
+
+
 }
 
 
