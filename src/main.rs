@@ -23,7 +23,8 @@ use structs::common::DatabaseConfig;
 use handlers::{
     common::{handler_404, root},
     user::create_user,
-    mflix::{list_users, user_by_id, user_by_name, user_by_email, login, signup},
+    mflix::{list_users, user_by_id, user_by_name, user_by_email},
+    auth::{login, signup}
 };
 
 use std::net::SocketAddr;

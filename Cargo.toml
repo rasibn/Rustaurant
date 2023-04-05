@@ -17,4 +17,5 @@ tracing-subscriber = "0.3.16"
 bson = { version = "2", features = ["chrono-0_4"] }
 serde_with = "2.3.1"
 dotenv = "0.15.0"
-axum-login = "0.4.1"
+jsonwebtoken = "8.3.0"
+bcrypt = "0.14.0"
