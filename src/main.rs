@@ -24,11 +24,10 @@ use handlers::{
     common::{handler_404, root},
     user::create_user,
     mflix::{list_users, user_by_id, user_by_name, user_by_email},
-   // auth::{login, signup}
+    auth::{login, signup}
 };
 
 use std::net::SocketAddr;
-use std::time::Duration;
 
 #[tokio::main]
 async fn main() {
@@ -52,8 +51,8 @@ async fn main() {
         .route("/mflix/user/id/:id/", get(user_by_id))
         .route("/mflix/user/name/:name/", get(user_by_name))
         .route("/mflix/user/email/:email/", get(user_by_email))
-        //.route("/mflix/user/login/", post(login))
-       // .route("/mflix/user/signup/", post(signup))
+        .route("/mflix/user/login/", post(login))
+        .route("/mflix/user/signup/", post(signup))
         
         .layer(TraceLayer::new_for_http())
         .layer(SetResponseHeaderLayer::if_not_present(
