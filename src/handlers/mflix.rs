@@ -66,6 +66,7 @@ pub async fn list_users(State(client): State<Client>, pagination: Query<Paginati
 
 pub async fn user_by_id(State(client): State<Client>, user_id: Path<String>) -> impl IntoResponse {
     let id = ObjectId::parse_str(user_id.0);
+    
     if let Err(err) = id {
         return (StatusCode::BAD_REQUEST, Json(Response {
             success: false,
