@@ -5,6 +5,7 @@ use yew_router::prelude::*;
 //import functional components from yew
 
 mod pages;
+mod components;
 
 use pages::{
     about::About, home::Home, not_found::NotFound,
