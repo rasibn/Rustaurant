@@ -6,7 +6,7 @@ pub fn navbar() -> Html {
   html! {
     <nav>
     // Navigation links go here
-    <div class={classes!("")}></div>
+    <div class={classes!("text-navy-700")}>{"Navbar"}</div>
     </nav>
   }
 }
