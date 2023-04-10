@@ -8,7 +8,7 @@ mod pages;
 mod components;
 
 use pages::{
-    about::About, home::Home, not_found::NotFound,
+    about::About, home::Home, not_found::NotFound, restaurant::Restaurant
 };
 
 
@@ -23,6 +23,8 @@ enum Route {
     #[not_found]
     #[at("/404")]
     NotFound,
+    #[at("/restaurant/:name")] //TODO: need to add a dynamic route here 
+    Restaurant
 
 }
 
@@ -32,6 +34,7 @@ fn switch(routes: Route) -> Html {
         Route::Home => html! { <Home /> },
         Route::Secure => html! { <Secure /> },
         Route::NotFound => html! { <NotFound /> },
+        Route::Restaurant => html! { <Restaurant />}
     }
 }
 
