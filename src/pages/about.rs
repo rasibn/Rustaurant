@@ -1,5 +1,5 @@
 use yew::{function_component, html, Html};
-use crate::components::layout::Layout;
+use crate::components::{layout::Layout, card::Card};
 
 #[function_component(About)]
 pub fn about() -> Html {
@@ -7,6 +7,7 @@ pub fn about() -> Html {
         <Layout>
             <h1>{"About us"}</h1>
             <p>{"This is a restaurant review app. It is a work in progress."}</p>
+            <Card/>
         </Layout> 
     }
 }
