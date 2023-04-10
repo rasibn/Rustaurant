@@ -1,7 +1,5 @@
 {
     "rust-analyzer.linkedProjects": [
-        "/Cargo.toml",
-        "/Cargo.toml",
-        "/Cargo.toml"
+        "D:/OneDrive - Institute of Business Administration/Documents/Semester 6/Rust/Project/rust-axum-project/Cargo.toml"
     ]
 }
