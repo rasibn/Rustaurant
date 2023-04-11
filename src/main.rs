@@ -22,9 +22,8 @@ mod structs;
 use structs::common::DatabaseConfig;
 use handlers::{
     common::{handler_404, root},
-    user::create_user,
     mflix::{list_users, user_by_id, user_by_name, user_by_email},
-    //auth::{login, signup}
+    user::{create_user}
 };
 
 use std::net::SocketAddr;
@@ -46,13 +45,13 @@ async fn main() {
     // build our application with a route
     let app = Router::new()
         .route("/", get(root)) // `GET /` goes to `root`
-        .route("/users", post(create_user)) // `POST /users` goes to `create_user`
-        .route("/mflix/users/", get(list_users))
+        .route("/users/create/", post(create_user)) // `POST /users` goes to `create_user`
+        .route("/mflix/user/", get(list_users))
         .route("/mflix/user/id/:id/", get(user_by_id))
         .route("/mflix/user/name/:name/", get(user_by_name))
         .route("/mflix/user/email/:email/", get(user_by_email))
-        //.route("/mflix/user/login/", post(login))
-        //.route("/mflix/user/signup/", post(signup))
+        // .route("/mflix/user/login/", post(login))
+        // .route("/mflix/user/signup/", post(signup))
         
         .layer(TraceLayer::new_for_http())
         .layer(SetResponseHeaderLayer::if_not_present(
