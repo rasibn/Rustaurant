@@ -7,9 +7,11 @@ mod footer;
 pub fn layout(props: &Props) -> Html {
     html! {
         <div>
+        <navbar::NavBar />
             <main>
                 { for props.children.iter()}
             </main>
+        <footer::Footer />
         </div>
     }
 }
