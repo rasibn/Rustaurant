@@ -1,7 +1,7 @@
 use yew::{function_component, html, Html};
 
-#[function_component(StarRating)]
-pub fn star_rating() -> Html {
+#[function_component(Rating)]
+pub fn rating() -> Html {
     html! { 
     <div>
     <div class="flex items-center mb-3">
