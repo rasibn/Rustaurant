@@ -12,7 +12,7 @@ use mongodb::{
     bson::{Bson, doc, Document, oid::ObjectId,},
     Client,
     Collection,
-    options::{FindOptions, FindOneOptions},
+    options::{FindOneOptions, DeleteOptions},
 };
 
 
@@ -34,8 +34,16 @@ pub async fn create_user(State(client): State<Client>,Json(mut payload): Json<Us
     .database("app_database")
     .collection::<User>("users");
     
+    let filter = doc! {
+        "$or": [
+            {"username": payload.username.clone()},
+            {"email": payload.email.clone()}
+        ]
+    };
+    
     let options = FindOneOptions::default();
-    let cursor = users_coll.find_one(doc!{"email":payload.email.clone()}, options).await;
+    let cursor = users_coll.find_one(filter, options).await;
+    //let cursor = users_coll.find_one(doc!{"email":payload.email.clone(),"username":payload.username.clone()}, options).await;
 
     match cursor {
         Ok(value) => {
@@ -76,59 +84,109 @@ pub async fn create_user(State(client): State<Client>,Json(mut payload): Json<Us
             }))
         }
     }
+}
 
+pub async fn delete_user(State(client): State<Client>, email: Path<String>) -> impl IntoResponse {
+    let users_coll: Collection<User> = client
+    .database("app_database")
+    .collection::<User>("users");
 
+    let options = DeleteOptions::default();
+    let result = users_coll.delete_one(doc!{"email":email.0}, options).await;
 
+    match result {
+        Ok(value) => {
+            match value.deleted_count {
+                0 => {
+                    (StatusCode::NOT_FOUND, Json(Response {
+                        success: false,
+                        error_message: Some("No user found".to_string()),
+                        data: None
+                    }))
+                },
+                _ => {
+                    (StatusCode::OK, Json(Response {
+                        success: true,
+                        error_message: None,
+                        data: None
+                    }))
+                }
+            }
+        },
+        Err(err) => {
+            (StatusCode::INTERNAL_SERVER_ERROR, Json(Response {
+                success: false,
+                error_message: Some(format!("Couldn't delete user due to {:#?}", err)),
+                data: None
+            }))
+        }
+    }
+        
+}
 
+pub async fn user_from_email(State(client): State<Client>, email: Path<String>) -> impl IntoResponse {
+    let user_email = email.0;
+    fetch_user(client, doc! {
+        "email": &user_email
+    }).await
+}
 
+pub async fn user_from_username(State(client): State<Client>, name: Path<String>) -> impl IntoResponse {
+    let user_name = name.0;
+    fetch_user(client, doc! {
+        "username": &user_name
+    }).await
+}
 
+async fn fetch_user(client: Client, filter: Document) -> (StatusCode, Json<Response>) {
 
+    let users_coll: Collection<User> = client
+    .database("app_database")
+    .collection::<User>("users");
 
+    let mut options = FindOneOptions::default();
+    options.projection = Some(doc! {
+        "username": 1,
+        "email": 1,
+        "password": 1
+    });
 
-    // match cursor{
-    //     Ok(_)=>{return (StatusCode::BAD_REQUEST, Json(Response {
-    //         success: false,
-    //         error_message: Some("User already exists".to_string()),
-    //         data: None
-    //     }))},
-    //     Err(_)=>{
-    //         let result = users_coll.insert_one(payload.clone(), None).await;
-    //         match result {
-    //             Ok(_) => {
-    //                 (StatusCode::CREATED, Json(Response {
-    //                     success: true,
-    //                     error_message: None,
-    //                     data: None
-    //                 }))
-    //             },
-    //             Err(err) => {
-    //                 (StatusCode::INTERNAL_SERVER_ERROR, Json(Response {
-    //                     success: false,
-    //                     error_message: Some(format!("Couldn't create user due to {:#?}", err)),
-    //                     data: None
-    //                 }))
-    //             }   
-    //         }
-    //     }
-    // }
-
-    // let result = users_coll.insert_one(payload.clone(), None).await;
-    // match result {
-    //     Ok(_) => {
-    //         (StatusCode::CREATED, Json(Response {
-    //             success: true,
-    //             error_message: None,
-    //             data: None
-    //         }))
-    //     },
-    //     Err(err) => {
-    //         (StatusCode::INTERNAL_SERVER_ERROR, Json(Response {
-    //             success: false,
-    //             error_message: Some(format!("Couldn't create user due to {:#?}", err)),
-    //             data: None
-    //         }))
-    //     }
-    // }
+    let user = users_coll.find_one(filter.clone(), options).await;
+    match user {
+        Ok(value) => {
+            match value {
+                Some(user) => {
+                    (StatusCode::FOUND, Json(Response {
+                        success: true,
+                        data: Some(vec![user]),
+                        error_message: None
+                    }))
+                },
+                None => {
+                    let mut message: String = "".to_owned();
+                    for (k, v) in filter {
+                        let message_part = match v {
+                            Bson::String(val) => format!("{}=={}, ", k, val),
+                            _ => format!("{}=={}, ", k, v)
+                        };
+                        message.push_str(&message_part);
+                    }
+                    (StatusCode::NOT_FOUND, Json(Response {
+                        success: false,
+                        error_message: Some(format!("No user exists for given filter: {}", message)),
+                        data: None
+                    }))
+                }
+            }
+        },
+        Err(err) => {
+            (StatusCode::NOT_FOUND, Json(Response {
+                success: false,
+                error_message: Some(format!("Couldn't find any user due to {:#?}", err)),
+                data: None
+            }))
+        }
+    }
 }
 // pub async fn create_user(
 //     // this argument tells axum to parse the request body as JSON into a `CreateUser` type

@@ -1,5 +1,5 @@
 use axum::{
-    routing::{get, post},
+    routing::{get, post, delete},
     http::{header, HeaderValue},
     Router,
 };
@@ -23,7 +23,7 @@ use structs::common::DatabaseConfig;
 use handlers::{
     common::{handler_404, root},
     mflix::{list_users, user_by_id, user_by_name, user_by_email},
-    user::{create_user}
+    user::{create_user,delete_user,user_from_email,user_from_username}
 };
 
 use std::net::SocketAddr;
@@ -45,7 +45,10 @@ async fn main() {
     // build our application with a route
     let app = Router::new()
         .route("/", get(root)) // `GET /` goes to `root`
-        .route("/users/create/", post(create_user)) // `POST /users` goes to `create_user`
+        .route("/users/create/", post(create_user))
+        .route("/users/delete/:email/", delete(delete_user))
+        .route("/users/email/:email/", get(user_from_email))
+        .route("/users/name/:name/", get(user_from_username)) // `POST /users` goes to `create_user`
         .route("/mflix/user/", get(list_users))
         .route("/mflix/user/id/:id/", get(user_by_id))
         .route("/mflix/user/name/:name/", get(user_by_name))
