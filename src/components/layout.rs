@@ -8,7 +8,7 @@ pub fn layout(props: &Props) -> Html {
     html! {
         <div>
         <navbar::NavBar />
-            <main>
+            <main class="mx-4">
                 { for props.children.iter()}
             </main>
         <footer::Footer />

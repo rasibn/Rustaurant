@@ -11,3 +11,7 @@ html {
 body {
     background-color: #202142;
 }
+
+.text-primary {
+    color: #c2d2e9;
+}
