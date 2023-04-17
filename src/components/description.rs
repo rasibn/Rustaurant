@@ -10,7 +10,7 @@ pub fn description(props: &Props) -> Html { //TODO: Dummy code fix later
     html! { 
             <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                 <a href="#">
-                    <img class="rounded-t-lg" src="images/dominos.png" alt="Image here" />
+                    <img class="rounded-t-lg" src="/static/images/dominos.png" alt="Image here"/>
                 </a>
                 <div class="p-5">
                     <a href="#">

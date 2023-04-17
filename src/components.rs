@@ -3,3 +3,4 @@ pub mod card;
 pub mod rating;
 pub mod review;
 pub mod description;
+pub mod review_modal;
