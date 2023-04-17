@@ -14,6 +14,8 @@ struct UserReview {
     user_image: String,
     user_join_date: String,
 }
+
+
 #[function_component(Restaurant)]
 pub fn restaurant() -> Html {
     // TODO: get restaurant name, address, description, and num_star from backend
@@ -57,12 +59,13 @@ pub fn restaurant() -> Html {
         }
     );
         // use_state in yew
-    let show_modal = use_state(|| false);
+    let show_modal = use_state(|| "block");
 
     // Make a onclick event to toggle the modal
     let onclick = {
         let show_modal = show_modal.clone();
-        Callback::from(move |_: MouseEvent| show_modal.set(!*show_modal))
+        let value = if *show_modal == "block" { "hidden" } else { "block" };
+        Callback::from(move |_: MouseEvent| show_modal.set(value))
     };
      
     html! { 
