@@ -1,3 +1,5 @@
-# rust-axum-project
+# Rustaurant Backend
 
-The Backend for a restaurant browsing website, built using pure rust using Yew for frontend and Axum for backend.
+The Backend for a restaurant browsing website, built using pure rust's Axum framework.
+
+The project's frontend is built using the Yew framework.
