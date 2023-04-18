@@ -1,5 +1,5 @@
 use axum::{
-    routing::{get, post, delete},
+    routing::{get, post, delete, put,patch},
     http::{header, HeaderValue},
     Router,
 };
@@ -23,7 +23,7 @@ use structs::common::DatabaseConfig;
 use handlers::{
     common::{handler_404, root},
     mflix::{list_users, user_by_id, user_by_name, user_by_email},
-    user::{create_user,delete_user,user_from_email,user_from_username}
+    user::{create_user,delete_user,user_from_email,user_from_username,update_user}
 };
 
 use std::net::SocketAddr;
@@ -49,6 +49,7 @@ async fn main() {
         .route("/users/delete/:email/", delete(delete_user))
         .route("/users/email/:email/", get(user_from_email))
         .route("/users/name/:name/", get(user_from_username)) // `POST /users` goes to `create_user`
+        .route("/users/update/",patch(update_user))
         .route("/mflix/user/", get(list_users))
         .route("/mflix/user/id/:id/", get(user_by_id))
         .route("/mflix/user/name/:name/", get(user_by_name))
