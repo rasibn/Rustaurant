@@ -12,11 +12,11 @@ use mongodb::{
     bson::{Bson, doc, Document, oid::ObjectId,},
     Client,
     Collection,
-    options::{FindOneOptions, DeleteOptions},
+    options::{FindOneOptions, DeleteOptions, UpdateOptions},
 };
 
 
-use crate::structs::user::{Response, User};
+use crate::structs::user::{Response, User, self};
 
 extern crate bcrypt;
 use bcrypt::{hash, verify, DEFAULT_COST};
@@ -187,6 +187,104 @@ async fn fetch_user(client: Client, filter: Document) -> (StatusCode, Json<Respo
             }))
         }
     }
+}
+
+pub async fn update_user (State(client): State<Client>,Json(payload): Json<User>) -> impl IntoResponse {
+    let users_coll: Collection<User> = client
+    .database("app_database")
+    .collection::<User>("users");
+
+    let filter = doc! {
+        "email": payload.email.clone()
+    };
+
+    let update = doc! { 
+        "$set": 
+        { "username": payload.username.clone() } 
+    };
+
+    let status = fetch_user(client, doc! {"username":payload.username.clone()}).await;
+
+    match status {
+        (StatusCode::NOT_FOUND, _) => {
+            let options = UpdateOptions::default();
+            let cursor = users_coll.update_one(filter, update, options).await;
+            //let cursor = users_coll.find_one_and_update(filter, update,options).await;
+            //let cursor = users_coll.find_one(doc!{"email":payload.email.clone(),"username":payload.username.clone()}, options).await;
+        
+            match cursor {
+                Ok(value) => {
+                    match value.modified_count {
+                        0 => {
+                            (StatusCode::NOT_FOUND, Json(Response {
+                                success: false,
+                                error_message: Some("No user updated or found".to_string()),
+                                data: None
+                            }))
+                        },
+                        _ => {
+                            (StatusCode::OK, Json(Response {
+                                success: true,
+                                error_message: None,
+                                data: None
+                            }))
+                        }
+                    }
+                },
+                Err(err) => return {
+                    (StatusCode::NOT_FOUND, Json(Response {
+                        success: false,
+                        error_message: Some(format!("Couldn't find any user due to {:#?}", err)),
+                        data: None
+                    }))
+                }
+            }
+        
+        },
+        _ => return {
+            (StatusCode::BAD_REQUEST, Json(Response {
+                success: false,
+                error_message: Some(format!("Username already exists")),
+                data: None
+            }))
+        }
+
+
+    }
+
+    // let options = UpdateOptions::default();
+    // let cursor = users_coll.update_one(filter, update, options).await;
+    // //let cursor = users_coll.find_one_and_update(filter, update,options).await;
+    // //let cursor = users_coll.find_one(doc!{"email":payload.email.clone(),"username":payload.username.clone()}, options).await;
+
+    // match cursor {
+    //     Ok(value) => {
+    //         match value.modified_count {
+    //             0 => {
+    //                 (StatusCode::NOT_FOUND, Json(Response {
+    //                     success: false,
+    //                     error_message: Some("No user updated or found".to_string()),
+    //                     data: None
+    //                 }))
+    //             },
+    //             _ => {
+    //                 (StatusCode::OK, Json(Response {
+    //                     success: true,
+    //                     error_message: None,
+    //                     data: None
+    //                 }))
+    //             }
+    //         }
+    //     },
+    //     Err(err) => return {
+    //         (StatusCode::NOT_FOUND, Json(Response {
+    //             success: false,
+    //             error_message: Some(format!("Couldn't find any user due to {:#?}", err)),
+    //             data: None
+    //         }))
+    //     }
+    // }
+
 }
 // pub async fn create_user(
 //     // this argument tells axum to parse the request body as JSON into a `CreateUser` type
