@@ -1,5 +1,5 @@
 use yew::{function_component, html, Html};
-use crate::components::{layout::Layout, card::Card};
+use crate::components::{layout::Layout};
 
 #[function_component(About)]
 pub fn about() -> Html {

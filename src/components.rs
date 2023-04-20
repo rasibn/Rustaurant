@@ -4,3 +4,4 @@ pub mod rating;
 pub mod review;
 pub mod card2;
 pub mod review_modal;
+pub mod rating_dropdown;

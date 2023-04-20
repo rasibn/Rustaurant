@@ -21,6 +21,7 @@ pub fn reviews(props: &Props) -> Html {
                 </div>
             </div>
             <div class="flex items-center mb-1">
+
                 {(0..5).into_iter().map(|i| {
                     let mut classes = "w-5 h-5 text-yellow-400";
                     if i+1 > props.user_rating {
