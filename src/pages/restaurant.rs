@@ -3,17 +3,8 @@ use crate::components::layout::Layout;
 use crate::components::rating::Rating;
 use crate::components::review::Review;
 use crate::components::review_modal::ReviewModal;
+use crate::components::review_modal::UserReviews;
 use yew::prelude::*;
-
-#[derive(Clone, PartialEq)]
-struct UserReview {
-    user_rating: i32,
-    user_review_title: String,
-    user_review: String,
-    user_name: String,
-    user_image: String,
-    user_join_date: String,
-}
 
 #[function_component(Restaurant)]
 pub fn restaurant() -> Html {
@@ -24,9 +15,9 @@ pub fn restaurant() -> Html {
     let num_star = [50, 30, 13, 33, 52];
 
     // TODO: get a user's rating, review, user_image, user_join_date from backend
-    let mut users: Vec<UserReview> = Vec::new();
+    let mut users: Vec<UserReviews> = Vec::new();
 
-    users.push(UserReview {
+    users.push(UserReviews {
         user_rating: 5,
         user_review_title: String::from("This is a review title"),
         user_review: String::from("This is a review"),
@@ -35,7 +26,7 @@ pub fn restaurant() -> Html {
         user_join_date: String::from("2021-01-01"),
     });
 
-    users.push(UserReview {
+    users.push(UserReviews {
         user_rating: 4,
         user_review_title: String::from("This is a review title"),
         user_review: String::from("This is a review"),
@@ -44,7 +35,7 @@ pub fn restaurant() -> Html {
         user_join_date: String::from("2021-01-01"),
     });
 
-    users.push(UserReview {
+    users.push(UserReviews {
         user_rating: 3,
         user_review_title: String::from("This is a review title"),
         user_review: String::from("This is a review"),
@@ -56,15 +47,21 @@ pub fn restaurant() -> Html {
     let show_modal = use_state(|| "block");
 
     // Make a onclick event to toggle the modal
-    let onclick = {
-        let show_modal = show_modal.clone();
-        let value = if *show_modal == "block" {
-            "hidden"
-        } else {
-            "block"
-        };
-        Callback::from(move |_: MouseEvent| show_modal.set(value))
-    };
+    // let onsubmit = {
+    //     let show_modal = show_modal.clone();
+    //     let value = if *show_modal == "block" {
+    //         "hidden"
+    //     } else {
+    //         "block"
+    //     };
+    //     Callback::from(move |e: MouseEvent| {
+    //      e.prevent_default();
+    //      show_modal.set(value)})
+    // };
+
+    let onsubmit = Callback::from(move |UserReview: UserReviews| {
+        web_sys::console::log_1(&format!("UserReview: {:?}", UserReview.user_rating).into());
+    });
 
     html! {
         <Layout>
@@ -83,11 +80,11 @@ pub fn restaurant() -> Html {
             </div>
 
             <h3 class="mb-2 mt-3 text-3xl font-medium leading-tight text-primary">{"Your Review:"}</h3>
-            <ReviewModal show_modal = {*show_modal}/>
+            <ReviewModal {onsubmit} show_modal = {*show_modal}/>
 
-            <button {onclick} class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-            {if *show_modal == "block" {"Submit"} else {"Leave a Review"}}
-            </button>
+            //<button {onclick} class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            // {if *show_modal == "block" {"Submit"} else {"Leave a Review"}}
+            // </button>
             <h3 class="mb-2 mt-3 text-3xl font-medium leading-tight text-primary">{"Other's Reviews"}</h3>
             {
                 users.iter().map(|user| {
