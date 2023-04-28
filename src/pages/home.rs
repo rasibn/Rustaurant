@@ -1,5 +1,3 @@
-use std::any;
-
 use crate::components::home::{card::Card, card::Props as CardProps, search_input::SearchInput};
 use crate::components::layout::Layout;
 use yew::{function_component, html, use_effect, use_state_eq, Callback, Html, UseStateHandle};
