@@ -1,4 +1,5 @@
 pub mod layout;
+pub mod home;
 pub mod card;
 pub mod rating;
 pub mod review;

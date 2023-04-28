@@ -6,9 +6,9 @@ mod footer;
 #[function_component(Layout)]
 pub fn layout(props: &Props) -> Html {
     html! {
-        <div>
+        <div class="flex flex-col h-screen">
         <navbar::NavBar />
-            <main class="mx-4">
+            <main class="mx-4 grow mt-20">
                 { for props.children.iter()}
             </main>
         <footer::Footer />
