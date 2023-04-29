@@ -74,20 +74,20 @@ pub fn review_modal(props: &Props) -> Html {
     <label for="small-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{"Review Title"}</label>
     <input type="text" placeholder={"Put your review title here"} value={cloned_title} oninput={handle_input_title} id="small-input" class="block w-full p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
     </div>
-    <div class="mb-6">
+    <div class="mt-3">
     <label for="large-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{"My Review"}</label>
     <input type="text" placeholder={"The world is waiting for your review."} value={cloned_review} oninput={handle_input_review} id="large-input" class="block w-full p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
     </div>
-    <div class="mb-6">
+    <div class="mt-3">
     //<label for="default-input" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{"Default input"}</label>
     //<input type="text" id="default-input" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
     </div>
-    <div class="mb-6">
+    <div class="mt-3">
     <label for="my-dropdown" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">{"Select a rating:"}</label>
     <input id="my-dropdown" placeholder={"Rate this rustaurant 1 to 5"} value={cloned_rating.to_string()} oninput={handle_input_rating} class="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700" name="my-dropdown"/>  
     </div>
     </div>
-    <input onclick={onsubmit} type="submit" value={"Submit"} class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"/>
+    <input onclick={onsubmit} type="submit" value={"Submit"} class="block mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"/>
     </form>
 
     }

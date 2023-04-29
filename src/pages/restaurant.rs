@@ -1,4 +1,4 @@
-use crate::components::card2::Card2;
+use crate::components::card::Card;
 use crate::components::layout::Layout;
 use crate::components::rating::Rating;
 use crate::components::review::Review;
@@ -59,18 +59,18 @@ pub fn restaurant() -> Html {
     //      show_modal.set(value)})
     // };
 
-    let onsubmit = Callback::from(move |UserReview: UserReviews| {
-        web_sys::console::log_1(&format!("UserReview: {:?}", UserReview.user_rating).into());
+    let onsubmit = Callback::from(move |user_review: UserReviews| {
+        web_sys::console::log_1(&format!("UserReview: {:?}", user_review.user_rating).into());
     });
 
     html! {
         <Layout>
-            <h1 class="mb-2 mt-20 text-4xl font-medium leading-tight text-primary">{&restaurant_name}</h1>
-            <div class="flex">
-                <div class="flex-none mr-3">
-                    <Card2 {description}
-                    restaurant_name = {restaurant_name}
-                    image_path={image_path}
+            <div class="flex mt-3">
+                <div class="flex-none mr-10">
+                    <h1 class="mb-2 text-4xl font-medium leading-tight text-primary">{&restaurant_name}</h1>
+                    <Card {description}
+                    name = {restaurant_name}
+                    image={image_path}
                     />
                 </div>
                 <div class="flex-1 w-52">
@@ -79,12 +79,15 @@ pub fn restaurant() -> Html {
                 </div>
             </div>
 
-            <h3 class="mb-2 mt-3 text-3xl font-medium leading-tight text-primary">{"Your Review:"}</h3>
+            <h3 class="mb-2 mt-3 text-3xl font-medium leading-tight text-primary">{"Write a review"}</h3>
+            <div class="w-1/2">
             <ReviewModal {onsubmit} show_modal = {*show_modal}/>
+            </div>
 
             //<button {onclick} class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
             // {if *show_modal == "block" {"Submit"} else {"Leave a Review"}}
             // </button>
+            <div class="w-3/4">
             <h3 class="mb-2 mt-3 text-3xl font-medium leading-tight text-primary">{"Other's Reviews"}</h3>
             {
                 users.iter().map(|user| {
@@ -101,6 +104,7 @@ pub fn restaurant() -> Html {
                     }
                 }).collect::<Html>()
             }
+            </div>
         </Layout>
     }
 }
