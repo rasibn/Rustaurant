@@ -23,7 +23,8 @@ use structs::common::DatabaseConfig;
 use handlers::{
     common::{handler_404, root},
     mflix::{list_users, user_by_id, user_by_name, user_by_email},
-    user::{create_user,delete_user,user_from_email,user_from_username,update_user}
+    user::{create_user,delete_user,user_from_email,user_from_username,update_user},
+    restaurant::{create_restaurant,restaurant_from_name,fetch_all_restaurant}
 };
 
 use std::net::SocketAddr;
@@ -50,6 +51,9 @@ async fn main() {
         .route("/users/email/:email/", get(user_from_email))
         .route("/users/name/:name/", get(user_from_username)) // `POST /users` goes to `create_user`
         .route("/users/update/",patch(update_user))
+        .route("/restaurants/all/", get(fetch_all_restaurant))
+        .route("/restaurants/create/", post(create_restaurant))
+        .route("/restaurants/:name/", get(restaurant_from_name))
         .route("/mflix/user/", get(list_users))
         .route("/mflix/user/id/:id/", get(user_by_id))
         .route("/mflix/user/name/:name/", get(user_by_name))
