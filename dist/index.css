@@ -675,6 +675,10 @@ video {
   height: 2.5rem;
 }
 
+.h-32{
+  height: 8rem;
+}
+
 .h-4{
   height: 1rem;
 }
@@ -695,8 +699,16 @@ video {
   width: 50%;
 }
 
+.w-1\/3{
+  width: 33.333333%;
+}
+
 .w-10{
   width: 2.5rem;
+}
+
+.w-2\/3{
+  width: 66.666667%;
 }
 
 .w-2\/4{
@@ -719,10 +731,6 @@ video {
   width: 1.25rem;
 }
 
-.w-52{
-  width: 13rem;
-}
-
 .w-6{
   width: 1.5rem;
 }
@@ -743,16 +751,16 @@ video {
   flex: 1 1 0%;
 }
 
-.flex-none{
-  flex: none;
-}
-
 .grow{
   flex-grow: 1;
 }
 
 .grid-cols-4{
   grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.flex-row{
+  flex-direction: row;
 }
 
 .flex-col{

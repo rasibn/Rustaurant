@@ -11,7 +11,7 @@ pub fn restaurant() -> Html {
     // TODO: get restaurant name, address, description, and num_star from backend
     let restaurant_name = String::from("Restaurant A");
     let description = String::from("Restaurant A is a restaurant");
-    let image_path = String::from("/images/dominos.png");
+    let image_path = String::from("/images/dominos.jpg");
     let num_star = [50, 30, 13, 33, 52];
 
     // TODO: get a user's rating, review, user_image, user_join_date from backend
@@ -65,30 +65,28 @@ pub fn restaurant() -> Html {
 
     html! {
         <Layout>
-            <div class="flex mt-3">
-                <div class="flex-none mr-10">
-                    <h1 class="mb-2 text-4xl font-medium leading-tight text-primary">{&restaurant_name}</h1>
-                    <Card {description}
-                    name = {restaurant_name}
-                    image={image_path}
-                    />
-                </div>
-                <div class="flex-1 w-52">
-                    <Rating is_loading = {false}
-                    {num_star}/>
+            <div class="flex mt-3 border-3 items-center">
+                <div class="flex-1">
+                    <div class="flex flex-row">
+                        <div class="mr-10">
+                            <Card {description} name={restaurant_name.clone()} image={image_path} />
+                        </div>
+                        <div class="w-2/3">
+                            <h1 class="mb-2 text-4xl font-bold leading-tight text-primary">{&restaurant_name}</h1>
+                            <Rating is_loading={false} {num_star} />
+                            <h3 class="mb-2 mt-3 text-3xl font-bold leading-tight text-primary">{"Write a review"}</h3>
+                            <div class="w-3/4">
+                            <ReviewModal {onsubmit} show_modal = {*show_modal}/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <h3 class="mb-2 mt-3 text-3xl font-medium leading-tight text-primary">{"Write a review"}</h3>
-            <div class="w-1/2">
-            <ReviewModal {onsubmit} show_modal = {*show_modal}/>
-            </div>
-
             //<button {onclick} class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
             // {if *show_modal == "block" {"Submit"} else {"Leave a Review"}}
             // </button>
             <div class="w-3/4">
-            <h3 class="mb-2 mt-3 text-3xl font-medium leading-tight text-primary">{"Other's Reviews"}</h3>
+            <h3 class="mb-2 mt-3 text-3xl font-bold leading-tight text-primary">{"Other's Reviews"}</h3>
             {
                 users.iter().map(|user| {
                     html! {
