@@ -35,7 +35,7 @@ pub async fn create_restaurant(State(client): State<Client>,Json(mut rest): Json
     let payload = RestaurantDB {
         name: rest.name.clone(),
         description: rest.description.clone(),
-        num_star:vec![Bson::String(String::from("0")); 5],
+        num_star:vec![Bson::Int32(0); 5],
     };
 
     let options = FindOneOptions::default();
@@ -82,6 +82,13 @@ pub async fn create_restaurant(State(client): State<Client>,Json(mut rest): Json
         }
     }
 }
+
+// pub async fn restaurant_from_substring(State(client): State<Client>,sub_name: String) -> impl IntoResponse {
+//     let restaurant_name = name.0;
+//     fetch_restaurant(client, doc! {
+//         "name": { "$regex": &restaurant_name, "$options": "i" }
+//     }).await
+// }
 
 pub async fn restaurant_from_name(State(client): State<Client>, name: Path<String>) -> impl IntoResponse {
     let restaurant_name = name.0;
@@ -145,9 +152,7 @@ pub async fn fetch_all_restaurant(State(client): State<Client>) -> impl IntoResp
     let options = FindOptions::default();
 
     let mut restaurants_cursor = rest_coll
-        .find(None, options)
-        .await
-        .expect("could not load restaurants data.");
+        .find(None, options).await.expect("could not load restaurants info.");
 
     let mut restaurants: Vec<RestaurantDB> = Vec::new();
 
