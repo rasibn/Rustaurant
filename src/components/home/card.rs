@@ -1,8 +1,9 @@
 use crate::Route;
 use yew::{function_component, html, Html, Properties};
 use yew_router::prelude::Link;
+use serde::Deserialize;
 
-#[derive(Properties, PartialEq, Clone)]
+#[derive(Properties, Deserialize, PartialEq, Clone)]
 pub struct Props {
     pub name: String,
     pub image: String,
