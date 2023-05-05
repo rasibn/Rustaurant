@@ -88,17 +88,14 @@ pub fn restaurant() -> Html {
     let description = String::from("Restaurant A is a restaurant");
     let image_path = String::from("/images/dominos.jpg");
     let num_star = [50, 30, 13, 33, 52];
-
-    // TODO: get a user's rating, review, user_image, user_join_date from backend
-    let mut users: Vec<UserReview> = Vec::new();
     
     // use_state in yew
-    let show_modal = use_state(|| "block");
+    let review_exists = use_state(|| "block");
 
     // Make a onclick event to toggle the modal
 
-    let hide = {
-        let show_modal = show_modal.clone();
+    let hide_fn = {
+        let show_modal = review_exists.clone();
         let value = if *show_modal == "block" {
             "hidden"
         } else {
@@ -128,35 +125,24 @@ pub fn restaurant() -> Html {
                             <Rating is_loading={false} {num_star} />
                             <h3 class="mb-2 mt-3 text-3xl font-bold leading-tight text-primary">{"Write a review"}</h3>
                             <div class="w-3/4">
-                            <ReviewModal {onsubmit} {hide} show_modal = {*show_modal}/>
+                            <ReviewModal {onsubmit} {hide_fn} initial_user_review={ //TODO: INITIAL REVIEW
+                                UserReview {
+                                user_rating: 5,
+                                user_review_title: String::from("Origonal Review"),
+                                user_review: String::from("MY INITIAL REVIEW"),
+                                user_name: String::from("User ME"),
+                                user_image: String::from("https://www.w3schools.com/howto/img_avatar.png"),
+                                user_join_date: String::from("2021-01-01"),
+                            }}
+                            review_exists = {*review_exists}/>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            //<button {onclick} class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-            // {if *show_modal == "block" {"Submit"} else {"Leave a Review"}}
-            // </button>
             <div class="w-3/4">
-
-
             // REVIEWS 
             <h3 class="mb-2 mt-3 text-3xl font-bold leading-tight text-primary">{"Other's Reviews"}</h3>
-            {
-                users.iter().map(|user| {
-                    html! {
-                        <>
-                        <Review user_rating = {user.user_rating}
-                                user_review_title = {user.user_review_title.clone()}
-                                user_review = {user.user_review.clone()}
-                                user_name = {user.user_name.clone()}
-                                user_image = {user.user_image.clone()}
-                                user_join_date = {user.user_join_date.clone()}/>
-                        <br/>
-                        </>
-                    }
-                }).collect::<Html>()
-            }
             {
                 match user_reviews.as_ref() {
                     Some(resuturants) => resuturants
@@ -189,7 +175,6 @@ pub fn restaurant() -> Html {
                     }
                     },
                 }
-
             }
             </div>
         </Layout>

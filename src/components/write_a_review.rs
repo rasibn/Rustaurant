@@ -10,9 +10,10 @@ use yew::{
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct Props {
-    pub show_modal: String,
-    pub hide: Callback<MouseEvent>,
+    pub review_exists: String,
+    pub hide_fn: Callback<MouseEvent>,
     pub onsubmit: Callback<UserReview>,
+    pub initial_user_review: UserReview,
 }
 #[derive(Debug,  Deserialize, PartialEq, Clone)]
 pub struct UserReview {
@@ -26,9 +27,9 @@ pub struct UserReview {
 
 #[function_component(ReviewModal)]
 pub fn review_modal<>(props: &Props) -> Html {
-    let my_text_handle_title = use_state(|| "".to_string());
-    let my_text_handle_review = use_state(|| "".to_string());
-    let my_text_handle_rating = use_state(|| "1".to_string()); // Set the default value to "1" for rating
+    let my_text_handle_title = use_state(|| props.initial_user_review.user_review_title.clone());
+    let my_text_handle_review = use_state(|| props.initial_user_review.user_review.clone());
+    let my_text_handle_rating = use_state(|| props.initial_user_review.user_rating.to_string()); // Set the default value to "1" for rating
 
     let cloned_title = my_text_handle_title.deref().clone();
     let cloned_review = my_text_handle_review.deref().clone();
@@ -73,12 +74,12 @@ pub fn review_modal<>(props: &Props) -> Html {
     let onsubmit = Callback::from(move |e: MouseEvent| {
         e.prevent_default();
         web_sys::console::log_1(&format!("User Review: {:?}", user_review).into());
-        props_clone.borrow().hide.emit(e.clone());
+        props_clone.borrow().hide_fn.emit(e.clone());
     });
 
     html! {  //<!-- Main modal -->
         <form>
-        <div class={props_rc.borrow().show_modal.clone()}>
+        <div class={props_rc.borrow().review_exists.clone()}>
         <div class = {"w-2/3"}>
         <div class="mt-3">
           <label for="small-input" class="mb- text-2xl font-normal tracking-tight text-gray-900 dark:text-white text-sm">
@@ -127,9 +128,9 @@ pub fn review_modal<>(props: &Props) -> Html {
       </div>
       </div>
       // edit review button button that only shows when model is hidden
-      <div class={if props_rc.borrow().show_modal.clone() == "block" {"hidden"} else {"block"}}>
+      <div class={if props_rc.borrow().review_exists.clone() == "block" {"hidden"} else {"block"}}>
         <input
-          onclick={props_rc.borrow().hide.clone()}
+          onclick={props_rc.borrow().hide_fn.clone()}
           type="submit"
           value={"Edit Review"}
           class="text-white ml-5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
