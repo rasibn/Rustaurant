@@ -76,8 +76,12 @@ pub fn home() -> Html {
             .collect(),
         None => {
             html! {
-                <div>
-                    {"Loading..."}
+                <div class="flex justify-center items-center h-screen">
+                <div class="inline-flex space-x-4">
+                    <div class="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
+                    <div class="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
+                    <div class="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
+                </div>
                 </div>
         }
         },

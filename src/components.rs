@@ -3,5 +3,5 @@ pub mod home;
 pub mod rating;
 pub mod review;
 pub mod card;
-pub mod review_modal;
+pub mod write_a_review;
 pub mod rating_dropdown;
