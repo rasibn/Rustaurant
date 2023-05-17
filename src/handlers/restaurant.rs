@@ -126,7 +126,7 @@ async fn fetch_restaurant(client: Client, filter: Document) -> (StatusCode, Json
                         message.push_str(&message_part);
                     }
                     (StatusCode::NOT_FOUND, Json(Response {
-                        success: false,
+                        success: false, 
                         error_message: Some(format!("No restaurant exists for given filter: {}", message)),
                         data: None
                     }))
