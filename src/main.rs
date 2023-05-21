@@ -9,17 +9,23 @@ use mongodb::{
     Client,
 };
 
+use axum::http::{
+    Method
+};
+
 use tower_http::{
-    limit::RequestBodyLimitLayer,
     set_header::SetResponseHeaderLayer,
     trace::TraceLayer,
-    timeout::TimeoutLayer
+    cors::{CorsLayer, Any}
 };
+
+//use tower::{ServiceBuilder, ServiceExt, Service};
 
 mod handlers;
 mod structs;
 
 use structs::common::DatabaseConfig;
+
 use handlers::{
     common::{handler_404, root},
     mflix::{list_users, user_by_id, user_by_name, user_by_email},
@@ -29,6 +35,10 @@ use handlers::{
 };
 
 use std::net::SocketAddr;
+
+
+
+
 
 #[tokio::main]
 async fn main() {
@@ -63,7 +73,15 @@ async fn main() {
         .route("/mflix/user/email/:email/", get(user_by_email))
         // .route("/mflix/user/login/", post(login))
         // .route("/mflix/user/signup/", post(signup))
-        
+        // set cors
+        .layer(
+            tower_http::cors::CorsLayer::new()
+            // allow `GET`,`POST` and 'DELETE' when accessing the resource
+            .allow_methods(vec![Method::GET, Method::POST, Method::DELETE])
+            // allow requests from any origin
+            .allow_origin(Any)
+        )
+
         .layer(TraceLayer::new_for_http())
         .layer(SetResponseHeaderLayer::if_not_present(
             header::SERVER,
