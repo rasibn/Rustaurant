@@ -72,7 +72,7 @@ pub fn restaurant(props: &Props) -> Html {
                     let fetched_reviews = from_value::<ApiResponseForReviews>(reviews_response).unwrap();
                     let fetched_info = from_value::<ApiResponseForInfo>(info_response).unwrap();
 
-                    web_sys::console::log_1(&format!("Fetched resturants: {:?}", fetched_reviews).into());
+                    web_sys::console::log_1(&format!("Fetched reviews: {:?}", fetched_reviews).into());
                     web_sys::console::log_1(&format!("Fetched info: {:?}", fetched_info).into());
 
                     match fetched_users {
