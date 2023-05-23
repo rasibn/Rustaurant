@@ -2,7 +2,7 @@ use crate::components::card::Card;
 use crate::components::layout::Layout;
 use crate::components::rating::Rating;
 use crate::components::review::Review;
-use crate::components::write_a_review::ReviewModal;
+use crate::components::write_a_review::WriteAReview;
 use gloo_net::{http::Request, Error};
 use serde::Deserialize;
 use crate::components::write_a_review::UserReview;
@@ -35,42 +35,55 @@ pub fn restaurant() -> Html {
                                     UserReview {
                                         user_rating: 5,
                                         user_review_title: String::from("This is a review title"),
-                                        user_review: String::from("This is a review"),
+                                        user_review: String::from("This is my third Invicta Pro Diver. They are just fantastic value for money. This one arrived yesterday and the first thing I did was set the time, popped on an identical strap from another Invicta and went in the shower with it to test the waterproofing.... No problems.
+                                        
+                                        It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain.
+                                        
+                                        "),
                                         user_name: String::from("User A"),
                                         user_image: String::from("https://www.w3schools.com/howto/img_avatar.png"),
-                                        user_join_date: String::from("2021-01-01"),
+                                        user_join_date: String::from("2017-03-03 19:00"),
                                     },
                                     UserReview {
                                         user_rating: 4,
                                         user_review_title: String::from("This is a review title"),
-                                        user_review: String::from("This is a review"),
-                                        user_name: String::from("User B"),
+                                        user_review: String::from("
+                                        "),                                        user_name: String::from("User B"),
                                         user_image: String::from("https://www.w3schools.com/howto/img_avatar.png"),
-                                        user_join_date: String::from("2021-01-01"),
+                                        user_join_date: String::from("2017-03-03 19:00"),
                                     },
                                     UserReview {
                                         user_rating: 3,
-                                        user_review_title: String::from("This is a review title"),
-                                        user_review: String::from("This is a review"),
-                                        user_name: String::from("User C"),
+                                        user_review_title: String::from("Thinking to buy another one!"),
+                                        user_review: String::from("This is my third Invicta Pro Diver. They are just fantastic value for money. This one arrived yesterday and the first thing I did was set the time, popped on an identical strap from another Invicta and went in the shower with it to test the waterproofing.... No problems.
+                                        
+                                        It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain.
+                                        
+                                        "),                                        user_name: String::from("User C"),
                                         user_image: String::from("https://www.w3schools.com/howto/img_avatar.png"),
-                                        user_join_date: String::from("2021-01-01"),
+                                        user_join_date: String::from("2017-03-03 19:00"),
                                     },
                                     UserReview {
                                         user_rating: 2,
-                                        user_review_title: String::from("This is a review title"),
-                                        user_review: String::from("This is a review"),
-                                        user_name: String::from("User D"),
+                                        user_review_title: String::from("Thinking to buy another one!"),
+                                        user_review: String::from("This is my third Invicta Pro Diver. They are just fantastic value for money. This one arrived yesterday and the first thing I did was set the time, popped on an identical strap from another Invicta and went in the shower with it to test the waterproofing.... No problems.
+                                        
+                                        It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain.
+                                        
+                                        "),                                        user_name: String::from("User D"),
                                         user_image: String::from("https://www.w3schools.com/howto/img_avatar.png"),
-                                        user_join_date: String::from("2021-01-01"),
+                                        user_join_date: String::from("2017-03-03 19:00"),
                                     },
                                     UserReview {
                                         user_rating: 1,
-                                        user_review_title: String::from("This is a review title"),
-                                        user_review: String::from("This is a review"),
-                                        user_name: String::from("User E"),
+                                        user_review_title: String::from("Thinking to buy another one!"),
+                                        user_review: String::from("This is my third Invicta Pro Diver. They are just fantastic value for money. This one arrived yesterday and the first thing I did was set the time, popped on an identical strap from another Invicta and went in the shower with it to test the waterproofing.... No problems.
+                                        
+                                        It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain.
+                                        
+                                        "),                                        user_name: String::from("User E"),
                                         user_image: String::from("https://www.w3schools.com/howto/img_avatar.png"),
-                                        user_join_date: String::from("2021-01-01"),
+                                        user_join_date: String::from("2017-03-03 19:00"),
                                     },  
                                 ]),
                             }))
@@ -125,11 +138,11 @@ pub fn restaurant() -> Html {
                             <Rating is_loading={false} {num_star} />
                             <h3 class="mb-2 mt-3 text-3xl font-bold leading-tight text-primary">{"Write a review"}</h3>
                             <div class="w-3/4">
-                            <ReviewModal {onsubmit} {hide_fn} initial_user_review={ //TODO: INITIAL REVIEW
+                            <WriteAReview {onsubmit} {hide_fn} initial_user_review={ //TODO: INITIAL REVIEW
                                 UserReview {
                                 user_rating: 5,
-                                user_review_title: String::from("Origonal Review"),
-                                user_review: String::from("MY INITIAL REVIEW"),
+                                user_review_title: String::from("Initial Review"),
+                                user_review: String::from("My own initial review goes here"),
                                 user_name: String::from("User ME"),
                                 user_image: String::from("https://www.w3schools.com/howto/img_avatar.png"),
                                 user_join_date: String::from("2021-01-01"),

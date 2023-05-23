@@ -3,7 +3,7 @@ use yew::{function_component, html, Html, Properties};
 use yew_router::prelude::Link;
 use serde::Deserialize;
 
-#[derive(Properties, Deserialize, PartialEq, Clone)]
+#[derive(Properties, Deserialize, PartialEq, Clone, Debug)]
 pub struct Props {
     pub name: String,
     pub image: String,

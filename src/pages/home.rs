@@ -2,32 +2,63 @@ use crate::components::home::{card::Card, card::Props as CardProps, search_input
 use crate::components::layout::Layout;
 use gloo_net::{http::Request, Error};
 use serde::Deserialize;
-use wasm_bindgen::prelude::*;
 use yew::{
     function_component, html, use_effect_with_deps, use_state_eq, Callback, Html, Properties,
     UseStateHandle,
 };
+use serde_json::from_value;
 
 #[derive(Properties, Deserialize, PartialEq, Clone)]
-pub struct Resuturants {
-    pub resuturants: Vec<CardProps>,
+pub struct Restaurants {
+    pub restaurants: Vec<CardProps>,
+}
+
+
+
+#[derive(Properties, Deserialize, PartialEq, Clone, Debug)]
+pub struct Restaurant {
+    pub name: String,
+    pub description: String,
+    pub num_star: [i32; 5],
+}
+
+#[derive(serde::Deserialize, Debug)]
+struct ApiResponse {
+    data: Vec<Restaurant>,
+    success: bool,
 }
 
 #[function_component(Home)]
 pub fn home() -> Html {
-    let resuturants: UseStateHandle<Option<Resuturants>> = use_state_eq(|| None);
-
+    let restaurants: UseStateHandle<Option<Restaurants>> = use_state_eq(|| None);
     {
-        let resuturants = resuturants.clone();
+        let restaurants = restaurants.clone();
         use_effect_with_deps(
             move |_| {
                 wasm_bindgen_futures::spawn_local(async move {
                     let fetched_users = Request::get("https://dummyjson.com/users").send().await;
+                    //let fetched_resturants = Request::get("http://localhost:3000/restaurants/all/").send().await;
+                    // fetching the resulutants with body set to true
+                    let response = Request::get("http://localhost:3000/restaurants/all/")
+                    .send()
+                    .await
+                    .unwrap()
+                    .json::<serde_json::Value>()
+                    .await
+                    .unwrap();
+
+                    // You can see how the response looks with the following console_log then ask gpt-3 to generate the appropriate deserialized struct
+                    //web_sys::console::log_1(&format!("Response: {:?}", response).into());
+                    let fetched_resturants = from_value::<ApiResponse>(response).unwrap();
+
+                    web_sys::console::log_1(&format!("Fetched resturants: {:?}", fetched_resturants).into());
+                    web_sys::console::log_1(&format!("Fetched users: {:?}", fetched_users).into());
+                    
                     match fetched_users {
                         Ok(response) => {
                             web_sys::console::log_1(&format!("Response: {:?}", response).into());
-                            resuturants.set(Some(Resuturants {
-                                resuturants: (vec![
+                            restaurants.set(Some(Restaurants {
+                                restaurants: (vec![
                                     CardProps {
                                         name: String::from("Dominos"),
                                         image: String::from("/images/dominos.jpg"),
@@ -64,13 +95,15 @@ pub fn home() -> Html {
         );
     }
 
-    let resturant_list_logic = match resuturants.as_ref() {
-        Some(resuturants) => resuturants
-            .resuturants
+    let restaurant_list_logic = match restaurants.as_ref() {
+        Some(restaurants) => restaurants
+            .restaurants
             .iter()
-            .map(|resturant| {
+            .map(|restaurant| {
                 html! {
-                  <Card name={resturant.name.clone()} image={resturant.image.clone()} description={resturant.description.clone()} />
+                  <Card name={restaurant.name.clone()}
+                        image={restaurant.image.clone()}
+                        description={restaurant.description.clone()} />
                 }
             })
             .collect(),
@@ -98,7 +131,7 @@ pub fn home() -> Html {
                     <SearchInput {onsubmit} />
                 </div>
                 <div class="grid grid-cols-4 gap-6 mx-16">
-                { resturant_list_logic}
+                { restaurant_list_logic}
                 </div>
             </div>
         </Layout>
