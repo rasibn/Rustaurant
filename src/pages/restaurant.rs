@@ -94,15 +94,15 @@ pub fn restaurant(props: &Props) -> Html {
     // Make a onclick event to toggle the modal
 
     let hide_fn = {
-        let show_modal = review_exists.clone();
-        let value = if *show_modal == "block" {
+        let review_exists = review_exists.clone();
+        let value = if *review_exists == "block" {
             "hidden"
         } else {
             "block"
         };
         Callback::from(move |e: MouseEvent| {
          e.prevent_default();
-         show_modal.set(value)})
+         review_exists.set(value)})
     };
 
 
