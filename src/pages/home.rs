@@ -38,7 +38,7 @@ pub fn home() -> Html {
                 wasm_bindgen_futures::spawn_local(async move {
                     //let fetched_resturants = Request::get("http://localhost:3000/restaurants/all/").send().await;
                     // fetching the resulutants with body set to true
-                    let fetched_users = Request::get("https://dummyjson.com/users").send().await;
+                    let fetched_users: Result<gloo_net::http::Response, Error> = Request::get("https://dummyjson.com/users").send().await;
 
                     let response = Request::get("http://localhost:3000/restaurants/all/")
                     .send()
@@ -55,46 +55,36 @@ pub fn home() -> Html {
                     web_sys::console::log_1(&format!("Fetched resturants: {:?}", fetched_resturants).into());
                     web_sys::console::log_1(&format!("Fetched users: {:?}", fetched_users).into());
                     
-                    match fetched_users {
-                        Ok(response) => {
-                            //web_sys::console::log_1(&format!("Response: {:?}", response).into());
-                            restaurants.set(Some(Restaurants {
-                                restaurants: (vec![
-                                    CardProps {
-                                        name: String::from("Dominos"),
-                                        image: String::from("/images/dominos.jpg"),
-                                        description: String::from("Dominos is a pizza restaurant"),
-                                    },
-                                    CardProps {
-                                        name: String::from("Dominos"),
-                                        image: String::from("/images/dominos.jpg"),
-                                        description: String::from("Dominos is a pizza restaurant"),
-                                    },
-                                    CardProps {
-                                        name: String::from("Dominos"),
-                                        image: String::from("/images/dominos.jpg"),
-                                        description: String::from("Dominos is a pizza restaurant"),
-                                    },
-                                    CardProps {
-                                        name: String::from("Dominos"),
-                                        image: String::from("/images/dominos.jpg"),
-                                        description: String::from("Dominos is a pizza restaurant"),
-                                    },
-                                    CardProps {
-                                        name: String::from("Dominos"),
-                                        image: String::from("/images/dominos.jpg"),
-                                        description: String::from("Dominos is a pizza restaurant"),
-                                    },
-                                ]),
-                            }))
-                        }
-                        Err(e) => println!("Error: {:?}", e),
-                    }
+                    restaurants.set(Some(Restaurants {
+                        restaurants: (vec![
+                            CardProps {
+                                name: String::from("Dominos"),
+                                description: String::from("Dominos is a pizza restaurant"),
+                            },
+                            CardProps {
+                                name: String::from("Dominos"),
+                                description: String::from("Dominos is a pizza restaurant"),
+                            },
+                            CardProps {
+                                name: String::from("Dominos"),
+                                description: String::from("Dominos is a pizza restaurant"),
+                            },
+                            CardProps {
+                                name: String::from("Dominos"),
+                                description: String::from("Dominos is a pizza restaurant"),
+                            },
+                            CardProps {
+                                name: String::from("Dominos"),
+                                //image: String::from("/images/dominos.jpg"),
+                                description: String::from("Dominos is a pizza restaurant"),
+                            },
+                        ]),
+                    }));
                 });
             },
-            (),
-        );
-    }
+        (),
+    );
+}
 
     let restaurant_list_logic = match restaurants.as_ref() {
         Some(restaurants) => restaurants
@@ -103,7 +93,6 @@ pub fn home() -> Html {
             .map(|restaurant| {
                 html! {
                   <Card name={restaurant.name.clone()}
-                        image={restaurant.image.clone()}
                         description={restaurant.description.clone()} />
                 }
             })
@@ -122,7 +111,7 @@ pub fn home() -> Html {
     };
 
     let onsubmit = Callback::from(move |search: String| {
-        web_sys::console::log_1(&format!("Search ainput: {:?}", search).into());
+        web_sys::console::log_1(&format!("Search input: {:?}", search).into());
     });
 
     html! {

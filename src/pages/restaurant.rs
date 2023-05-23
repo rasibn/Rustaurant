@@ -8,7 +8,7 @@ use serde::Deserialize;
 use crate::components::write_a_review::UserReview;
 use yew::prelude::*;
 use serde_json::from_value;
-
+use std::rc::Rc;
 
 #[derive(Deserialize, Debug)]
 struct ApiResponseForInfo {
@@ -22,7 +22,7 @@ struct ApiResponseForReviews {
     success: bool,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, PartialEq, Clone, Debug)]
 struct RestaurantInfo {
     name: String,
     description: String,
@@ -37,14 +37,21 @@ pub struct Props {
 #[function_component(Restaurant)]
 pub fn restaurant(props: &Props) -> Html {
     let user_reviews: UseStateHandle<Option<Vec<UserReview>>> = use_state_eq(|| None);
+    let restaurant_info: UseStateHandle<Option<Rc<RestaurantInfo>>> = use_state_eq(|| 
+        Some(Rc::new(RestaurantInfo {
+            name: String::from("Empty"),
+            description: String::from("Empty"),
+            num_star: [0; 5],
+        }))
+    );
 
     {
         let user_reviews = user_reviews.clone();
+        let restaurant_info = restaurant_info.clone();
         let name = props.name.clone();
         use_effect_with_deps(
             move |_| {
                 wasm_bindgen_futures::spawn_local(async move {
-                    let fetched_users = Request::get("https://dummyjson.com/users").send().await;
                     let url = &format!("http://localhost:3000/restaurants/{}/reviews/", name)[..];
                     web_sys::console::log_1(&format!("URL: {:?}", url).into());
                     let reviews_response = Request::get(&format!("http://localhost:3000/restaurants/{}/reviews/", name)[..])
@@ -65,33 +72,20 @@ pub fn restaurant(props: &Props) -> Html {
         
                     let fetched_reviews = from_value::<ApiResponseForReviews>(reviews_response).unwrap();
                     let fetched_info = from_value::<ApiResponseForInfo>(info_response).unwrap();
-        
+                    
+
                     web_sys::console::log_1(&format!("Fetched reviews: {:?}", fetched_reviews).into());
                     web_sys::console::log_1(&format!("Fetched info: {:?}", fetched_info).into());
-        
-                    match fetched_users {
-                        Ok(response) => {
-                            // web_sys::console::log_1(&format!("Response: {:?}", response).into());
-                            user_reviews.set(Some(fetched_reviews.data));
-                        }
-                        Err(e) => println!("Error: {:?}", e),
-                    }
+
+                    user_reviews.set(Some(fetched_reviews.data));
+                    restaurant_info.set(Some(Rc::new(fetched_info.data[0].clone())));
                 });
             },
             (),
         );
     } 
 
-    // TODO: get restaurant name, address, description, and num_star from backend
-    let restaurant_name = String::from("Restaurant A");
-    let description = String::from("Restaurant A is a restaurant");
-    let image_path = String::from("/images/dominos.jpg");
-    let num_star = [50, 30, 13, 33, 52];
-    
-    // use_state in yew
     let review_exists = use_state(|| "block");
-
-    // Make a onclick event to toggle the modal
 
     let hide_fn = {
         let review_exists = review_exists.clone();
@@ -110,6 +104,7 @@ pub fn restaurant(props: &Props) -> Html {
         web_sys::console::log_1(&format!("UserReview: {:?}", user_review.user_rating).into());
     });
 
+    let restaurant_info = restaurant_info.as_ref().unwrap().clone();
 
     html! {
         <Layout>
@@ -117,11 +112,11 @@ pub fn restaurant(props: &Props) -> Html {
                 <div class="flex-1">
                     <div class="flex flex-row">
                         <div class="mr-10">
-                            <Card {description} name={restaurant_name.clone()} image={image_path} />
+                            <Card description={restaurant_info.description.clone()} name={restaurant_info.name.clone()}/>
                         </div>
                         <div class="w-2/3">
-                            <h1 class="mb-2 text-4xl font-bold leading-tight text-primary">{&restaurant_name}</h1>
-                            <Rating is_loading={false} {num_star} />
+                            <h1 class="mb-2 text-4xl font-bold leading-tight text-primary">{&restaurant_info.name}</h1>
+                            <Rating is_loading={false} num_star={restaurant_info.num_star} />
                             <h3 class="mb-2 mt-3 text-3xl font-bold leading-tight text-primary">{"Write a review"}</h3>
                             <div class="w-3/4">
                             <WriteAReview {onsubmit} {hide_fn} initial_user_review={ //TODO: INITIAL REVIEW
@@ -174,43 +169,3 @@ pub fn restaurant(props: &Props) -> Html {
         </Layout>
     }
 }
-
-
-// vec![
-//                                 UserReview {
-//                                     user_rating: 5,
-//                                     user_review_title: String::from("This is a review title"),
-//                                     user_review: String::from("This is my third Invicta Pro Diver. They are just fantastic value for money. This one arrived yesterday and the first thing I did was set the time, popped on an identical strap from another Invicta and went in the shower with it to test the waterproofing.... No problems.
-        
-//         It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain."),
-//                                     user_name: String::from("User A"),
-//                                 },
-//                                 UserReview {
-//                                     user_rating: 4,
-//                                     user_review_title: String::from("This is a review title"),
-//                                     user_review: String::from(""),
-//                                     user_name: String::from("User B"),
-//                                 },
-//                                 UserReview {
-//                                     user_rating: 3,
-//                                     user_review_title: String::from("Thinking to buy another one!"),
-//                                     user_review: String::from("This is my third Invicta Pro Diver. They are just fantastic value for money. This one arrived yesterday and the first thing I did was set the time, popped on an identical strap from another Invicta and went in the shower with it to test the waterproofing.... No problems.
-//         It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain."),
-//                                     user_name: String::from("User C"),
-//                                 },
-//                                 UserReview {
-//                                     user_rating: 2,
-//                                     user_review_title: String::from("Thinking to buy another one!"),
-//                                     user_review: String::from("This is my third Invicta Pro Diver. They are just fantastic value for money. This one arrived yesterday and the first thing I did was set the time, popped on an identical strap from another Invicta and went in the shower with it to test the waterproofing.... No problems.
-        
-//         It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain."),
-//                                     user_name: String::from("User D"),
-//                                 },
-//                                 UserReview {
-//                                     user_rating: 1,
-//                                     user_review_title: String::from("Thinking to buy another one!"),
-//                                     user_review: String::from("This is my third Invicta Pro Diver. They are just fantastic value for money. This one arrived yesterday and the first thing I did was set the time, popped on an identical strap from another Invicta and went in the shower with it to test the waterproofing.... No problems.
-//         It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain."),
-//                                     user_name: String::from("User E"),
-//                                 },
-//                             ]
