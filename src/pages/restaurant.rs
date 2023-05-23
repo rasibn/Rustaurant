@@ -11,13 +11,13 @@ use serde_json::from_value;
 
 
 #[derive(Deserialize, Debug)]
-pub struct ApiResponseForInfo {
+struct ApiResponseForInfo {
     data: Vec<RestaurantInfo>,
     success: bool,
 }
 
 #[derive(Deserialize, Debug)]
-pub struct ApiResponseForReviews {
+struct ApiResponseForReviews {
     data: Vec<UserReview>,
     success: bool,
 }
@@ -29,11 +29,6 @@ struct RestaurantInfo {
     num_star: [i32; 5],
 }
 
-#[derive(Deserialize, PartialEq, Clone)]
-pub struct UserReviews {
-    pub user_reviews: Vec<UserReview>,
-}
-
 #[derive(Properties, PartialEq)]
 pub struct Props {
     pub name: String,
@@ -41,12 +36,11 @@ pub struct Props {
 
 #[function_component(Restaurant)]
 pub fn restaurant(props: &Props) -> Html {
-    let user_reviews: UseStateHandle<Option<UserReviews>> = use_state_eq(|| None);
+    let user_reviews: UseStateHandle<Option<Vec<UserReview>>> = use_state_eq(|| None);
 
     {
         let user_reviews = user_reviews.clone();
         let name = props.name.clone();
-
         use_effect_with_deps(
             move |_| {
                 wasm_bindgen_futures::spawn_local(async move {
@@ -54,77 +48,31 @@ pub fn restaurant(props: &Props) -> Html {
                     let url = &format!("http://localhost:3000/restaurants/{}/reviews/", name)[..];
                     web_sys::console::log_1(&format!("URL: {:?}", url).into());
                     let reviews_response = Request::get(&format!("http://localhost:3000/restaurants/{}/reviews/", name)[..])
-                    .send()
-                    .await
-                    .unwrap()
-                    .json::<serde_json::Value>()
-                    .await
-                    .unwrap();
-
+                        .send()
+                        .await
+                        .unwrap()
+                        .json::<serde_json::Value>()
+                        .await
+                        .unwrap();
+        
                     let info_response = Request::get(&format!("http://localhost:3000/restaurants/{}/", name)[..])
-                    .send()
-                    .await
-                    .unwrap()
-                    .json::<serde_json::Value>()
-                    .await
-                    .unwrap();
-
+                        .send()
+                        .await
+                        .unwrap()
+                        .json::<serde_json::Value>()
+                        .await
+                        .unwrap();
+        
                     let fetched_reviews = from_value::<ApiResponseForReviews>(reviews_response).unwrap();
                     let fetched_info = from_value::<ApiResponseForInfo>(info_response).unwrap();
-
+        
                     web_sys::console::log_1(&format!("Fetched reviews: {:?}", fetched_reviews).into());
                     web_sys::console::log_1(&format!("Fetched info: {:?}", fetched_info).into());
-
+        
                     match fetched_users {
                         Ok(response) => {
-                            //web_sys::console::log_1(&format!("Response: {:?}", response).into());
-                            user_reviews.set(Some(UserReviews {
-                                user_reviews: (vec![
-                                    UserReview {
-                                        user_rating: 5,
-                                        user_review_title: String::from("This is a review title"),
-                                        user_review: String::from("This is my third Invicta Pro Diver. They are just fantastic value for money. This one arrived yesterday and the first thing I did was set the time, popped on an identical strap from another Invicta and went in the shower with it to test the waterproofing.... No problems.
-                                        
-                                        It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain.
-                                        
-                                        "),
-                                        user_name: String::from("User A"),
-                                    },
-                                    UserReview {
-                                        user_rating: 4,
-                                        user_review_title: String::from("This is a review title"),
-                                        user_review: String::from("
-                                        "),                                        user_name: String::from("User B"),
-                                    },
-                                    UserReview {
-                                        user_rating: 3,
-                                        user_review_title: String::from("Thinking to buy another one!"),
-                                        user_review: String::from("This is my third Invicta Pro Diver. They are just fantastic value for money. This one arrived yesterday and the first thing I did was set the time, popped on an identical strap from another Invicta and went in the shower with it to test the waterproofing.... No problems.
-                                        
-                                        It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain.
-                                        
-                                        "),                                        user_name: String::from("User C"),
-                                    },
-                                    UserReview {
-                                        user_rating: 2,
-                                        user_review_title: String::from("Thinking to buy another one!"),
-                                        user_review: String::from("This is my third Invicta Pro Diver. They are just fantastic value for money. This one arrived yesterday and the first thing I did was set the time, popped on an identical strap from another Invicta and went in the shower with it to test the waterproofing.... No problems.
-                                        
-                                        It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain.
-                                        
-                                        "),                                        user_name: String::from("User D"),
-                                    },
-                                    UserReview {
-                                        user_rating: 1,
-                                        user_review_title: String::from("Thinking to buy another one!"),
-                                        user_review: String::from("This is my third Invicta Pro Diver. They are just fantastic value for money. This one arrived yesterday and the first thing I did was set the time, popped on an identical strap from another Invicta and went in the shower with it to test the waterproofing.... No problems.
-                                        
-                                        It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain.
-                                        
-                                        "),                                        user_name: String::from("User E"),
-                                    },  
-                                ]),
-                            }))
+                            // web_sys::console::log_1(&format!("Response: {:?}", response).into());
+                            user_reviews.set(Some(fetched_reviews.data));
                         }
                         Err(e) => println!("Error: {:?}", e),
                     }
@@ -132,7 +80,7 @@ pub fn restaurant(props: &Props) -> Html {
             },
             (),
         );
-    }
+    } 
 
     // TODO: get restaurant name, address, description, and num_star from backend
     let restaurant_name = String::from("Restaurant A");
@@ -194,8 +142,7 @@ pub fn restaurant(props: &Props) -> Html {
             <h3 class="mb-2 mt-3 text-3xl font-bold leading-tight text-primary">{"Other's Reviews"}</h3>
             {
                 match user_reviews.as_ref() {
-                    Some(resuturants) => resuturants
-                        .user_reviews
+                    Some(restaurants) => restaurants
                         .iter()
                         .map(|user| {
                             html! {
@@ -227,3 +174,43 @@ pub fn restaurant(props: &Props) -> Html {
         </Layout>
     }
 }
+
+
+// vec![
+//                                 UserReview {
+//                                     user_rating: 5,
+//                                     user_review_title: String::from("This is a review title"),
+//                                     user_review: String::from("This is my third Invicta Pro Diver. They are just fantastic value for money. This one arrived yesterday and the first thing I did was set the time, popped on an identical strap from another Invicta and went in the shower with it to test the waterproofing.... No problems.
+        
+//         It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain."),
+//                                     user_name: String::from("User A"),
+//                                 },
+//                                 UserReview {
+//                                     user_rating: 4,
+//                                     user_review_title: String::from("This is a review title"),
+//                                     user_review: String::from(""),
+//                                     user_name: String::from("User B"),
+//                                 },
+//                                 UserReview {
+//                                     user_rating: 3,
+//                                     user_review_title: String::from("Thinking to buy another one!"),
+//                                     user_review: String::from("This is my third Invicta Pro Diver. They are just fantastic value for money. This one arrived yesterday and the first thing I did was set the time, popped on an identical strap from another Invicta and went in the shower with it to test the waterproofing.... No problems.
+//         It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain."),
+//                                     user_name: String::from("User C"),
+//                                 },
+//                                 UserReview {
+//                                     user_rating: 2,
+//                                     user_review_title: String::from("Thinking to buy another one!"),
+//                                     user_review: String::from("This is my third Invicta Pro Diver. They are just fantastic value for money. This one arrived yesterday and the first thing I did was set the time, popped on an identical strap from another Invicta and went in the shower with it to test the waterproofing.... No problems.
+        
+//         It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain."),
+//                                     user_name: String::from("User D"),
+//                                 },
+//                                 UserReview {
+//                                     user_rating: 1,
+//                                     user_review_title: String::from("Thinking to buy another one!"),
+//                                     user_review: String::from("This is my third Invicta Pro Diver. They are just fantastic value for money. This one arrived yesterday and the first thing I did was set the time, popped on an identical strap from another Invicta and went in the shower with it to test the waterproofing.... No problems.
+//         It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain."),
+//                                     user_name: String::from("User E"),
+//                                 },
+//                             ]
