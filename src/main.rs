@@ -28,7 +28,7 @@ enum Route {
     #[at("/404")]
     NotFound,
     #[at("/restaurant/:name")] //TODO: need to add a dynamic route here 
-    Restaurant
+    Restaurant {name: String}
 
 }
 
@@ -38,7 +38,7 @@ fn switch(routes: Route) -> Html {
         Route::Home => html! { <Home /> },
         Route::Secure => html! { <Secure /> },
         Route::NotFound => html! { <NotFound /> },
-        Route::Restaurant => html! { <Restaurant />},
+        Route::Restaurant { name }=> html! { <Restaurant {name} />},
         Route::Login => html! { <Login /> },
         Route::CreateAccount => html! { <CreateAccount /> }
     }

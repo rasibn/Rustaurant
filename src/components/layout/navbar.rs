@@ -7,7 +7,7 @@ pub fn navbar() -> Html {
     let routes = vec![
         ("Home", Route::Home),
         ("About", Route::About),
-        ("Restaurant", Route::Restaurant),
+        ("Restaurant", Route::Restaurant {name: "KFC".to_string()}),
         // TODO: Change this later
         ("Random", Route::NotFound),
     ];

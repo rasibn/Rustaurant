@@ -36,9 +36,10 @@ pub fn home() -> Html {
         use_effect_with_deps(
             move |_| {
                 wasm_bindgen_futures::spawn_local(async move {
-                    let fetched_users = Request::get("https://dummyjson.com/users").send().await;
                     //let fetched_resturants = Request::get("http://localhost:3000/restaurants/all/").send().await;
                     // fetching the resulutants with body set to true
+                    let fetched_users = Request::get("https://dummyjson.com/users").send().await;
+
                     let response = Request::get("http://localhost:3000/restaurants/all/")
                     .send()
                     .await
@@ -56,7 +57,7 @@ pub fn home() -> Html {
                     
                     match fetched_users {
                         Ok(response) => {
-                            web_sys::console::log_1(&format!("Response: {:?}", response).into());
+                            //web_sys::console::log_1(&format!("Response: {:?}", response).into());
                             restaurants.set(Some(Restaurants {
                                 restaurants: (vec![
                                     CardProps {

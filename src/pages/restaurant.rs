@@ -3,33 +3,81 @@ use crate::components::layout::Layout;
 use crate::components::rating::Rating;
 use crate::components::review::Review;
 use crate::components::write_a_review::WriteAReview;
-use gloo_net::{http::Request, Error};
+use gloo_net::{http::Request};
 use serde::Deserialize;
 use crate::components::write_a_review::UserReview;
 use yew::prelude::*;
+use serde_json::from_value;
 
-use yew::{
-    function_component, html, use_effect_with_deps, use_state_eq, Callback, Html, Properties,
-    UseStateHandle,
-};
 
-#[derive(Properties, Deserialize, PartialEq, Clone)]
+#[derive(Deserialize, Debug)]
+pub struct ApiResponseForInfo {
+    data: Vec<RestaurantInfo>,
+    success: bool,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct ApiResponseForReviews {
+    data: Vec<UserReview>,
+    success: bool,
+}
+
+#[derive(Deserialize, Debug)]
+struct RestaurantInfo {
+    name: String,
+    description: String,
+    num_star: [i32; 5],
+}
+
+#[derive(Deserialize, PartialEq, Clone)]
 pub struct UserReviews {
     pub user_reviews: Vec<UserReview>,
 }
+
+#[derive(Properties, PartialEq)]
+pub struct Props {
+    pub name: String,
+}
+
 #[function_component(Restaurant)]
-pub fn restaurant() -> Html {
+pub fn restaurant(props: &Props) -> Html {
     let user_reviews: UseStateHandle<Option<UserReviews>> = use_state_eq(|| None);
 
     {
         let user_reviews = user_reviews.clone();
+        let name = props.name.clone();
+
         use_effect_with_deps(
             move |_| {
                 wasm_bindgen_futures::spawn_local(async move {
                     let fetched_users = Request::get("https://dummyjson.com/users").send().await;
+                    let url = &format!("http://localhost:3000/restaurants/{}/reviews/", name)[..];
+                    web_sys::console::log_1(&format!("URL: {:?}", url).into());
+                    let reviews_response = Request::get(&format!("http://localhost:3000/restaurants/{}/reviews/", name)[..])
+                    .send()
+                    .await
+                    .unwrap()
+                    .json::<serde_json::Value>()
+                    .await
+                    .unwrap();
+
+                    let info_response = Request::get(&format!("http://localhost:3000/restaurants/{}/", name)[..])
+                    .send()
+                    .await
+                    .unwrap()
+                    .json::<serde_json::Value>()
+                    .await
+                    .unwrap();
+
+                    let fetched_reviews = from_value::<ApiResponseForReviews>(reviews_response).unwrap();
+                    let fetched_info = from_value::<ApiResponseForInfo>(info_response).unwrap();
+
+                    web_sys::console::log_1(&format!("Fetched resturants: {:?}", fetched_reviews).into());
+                    web_sys::console::log_1(&format!("Fetched info: {:?}", fetched_info).into());
+
                     match fetched_users {
                         Ok(response) => {
-                            web_sys::console::log_1(&format!("Response: {:?}", response).into());
+                            //web_sys::console::log_1(&format!("Response: {:?}", response).into());
                             user_reviews.set(Some(UserReviews {
                                 user_reviews: (vec![
                                     UserReview {
@@ -41,16 +89,12 @@ pub fn restaurant() -> Html {
                                         
                                         "),
                                         user_name: String::from("User A"),
-                                        user_image: String::from("https://www.w3schools.com/howto/img_avatar.png"),
-                                        user_join_date: String::from("2017-03-03 19:00"),
                                     },
                                     UserReview {
                                         user_rating: 4,
                                         user_review_title: String::from("This is a review title"),
                                         user_review: String::from("
                                         "),                                        user_name: String::from("User B"),
-                                        user_image: String::from("https://www.w3schools.com/howto/img_avatar.png"),
-                                        user_join_date: String::from("2017-03-03 19:00"),
                                     },
                                     UserReview {
                                         user_rating: 3,
@@ -60,8 +104,6 @@ pub fn restaurant() -> Html {
                                         It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain.
                                         
                                         "),                                        user_name: String::from("User C"),
-                                        user_image: String::from("https://www.w3schools.com/howto/img_avatar.png"),
-                                        user_join_date: String::from("2017-03-03 19:00"),
                                     },
                                     UserReview {
                                         user_rating: 2,
@@ -71,8 +113,6 @@ pub fn restaurant() -> Html {
                                         It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain.
                                         
                                         "),                                        user_name: String::from("User D"),
-                                        user_image: String::from("https://www.w3schools.com/howto/img_avatar.png"),
-                                        user_join_date: String::from("2017-03-03 19:00"),
                                     },
                                     UserReview {
                                         user_rating: 1,
@@ -82,8 +122,6 @@ pub fn restaurant() -> Html {
                                         It is obviously not the same build quality as those very expensive watches. But that is like comparing a Citroën to a Ferrari. This watch was well under £100! An absolute bargain.
                                         
                                         "),                                        user_name: String::from("User E"),
-                                        user_image: String::from("https://www.w3schools.com/howto/img_avatar.png"),
-                                        user_join_date: String::from("2017-03-03 19:00"),
                                     },  
                                 ]),
                             }))
@@ -144,8 +182,6 @@ pub fn restaurant() -> Html {
                                 user_review_title: String::from("Initial Review"),
                                 user_review: String::from("My own initial review goes here"),
                                 user_name: String::from("User ME"),
-                                user_image: String::from("https://www.w3schools.com/howto/img_avatar.png"),
-                                user_join_date: String::from("2021-01-01"),
                             }}
                             review_exists = {*review_exists}/>
                             </div>
@@ -167,9 +203,7 @@ pub fn restaurant() -> Html {
                                 <Review user_rating = {user.user_rating}
                                         user_review_title = {user.user_review_title.clone()}
                                         user_review = {user.user_review.clone()}
-                                        user_name = {user.user_name.clone()}
-                                        user_image = {user.user_image.clone()}
-                                        user_join_date = {user.user_join_date.clone()}/>
+                                        user_name = {user.user_name.clone()}/>
                                 <hr class="my-5" />
                                 <br/>
                                 </>  

@@ -6,8 +6,6 @@ pub struct Props {
     pub user_review_title: String,
     pub user_review: String,
     pub user_name: String,
-    pub user_image: String,
-    pub user_join_date: String,
 }
 
 #[function_component(Review)]
@@ -15,9 +13,9 @@ pub fn reviews(props: &Props) -> Html {
     html! { 
         <article>
             <div class="flex items-center mb-4 space-x-4">
-                <img class="w-10 h-10 rounded-full" src="/docs/images/people/profile-picture-5.jpg" alt=""/>
+                <img class="w-10 h-10 rounded-full" src="/images/img_avatar.png" alt=""/>
                 <div class="space-y-1 font-medium dark:text-white">
-                    <p>{"Jese Leos"}<time datetime="2014-08-16 19:00" class="block text-sm text-gray-500 dark:text-gray-400">{"Joined on "}{props.user_join_date.clone()}</time></p>
+                    <p>{"Jese Leos"}<time datetime="2014-08-16 19:00" class="block text-sm text-gray-500 dark:text-gray-400">{"Joined today"}</time></p>
                 </div>
             </div>
             <div class="flex items-center mb-1">

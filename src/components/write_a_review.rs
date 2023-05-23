@@ -21,8 +21,6 @@ pub struct UserReview {
     pub user_review_title: String,
     pub user_review: String,
     pub user_name: String,
-    pub user_image: String,
-    pub user_join_date: String,
 }
 
 #[function_component(WriteAReview)]
@@ -64,8 +62,6 @@ pub fn write_a_review(props: &Props) -> Html {
         user_review: cloned_review.clone(),
         user_rating: cloned_rating.parse::<i32>().unwrap_or(-1), // rating is greater than 5 just set it to -1
         user_name: "John Doe".to_string(),
-        user_image: "https://i.imgur.com/8Km9tLL.jpg".to_string(),
-        user_join_date: "2021-01-01".to_string(),
     };
 
     let props_rc = Rc::new(RefCell::new(props.clone()));
