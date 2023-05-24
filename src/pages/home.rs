@@ -1,6 +1,6 @@
 use crate::components::home::{card::Card, card::Props as CardProps, search_input::SearchInput};
 use crate::components::layout::Layout;
-use gloo_net::{http::Request, Error};
+use gloo_net::{http::Request};
 use serde::Deserialize;
 use yew::{
     function_component, html, use_effect_with_deps, use_state_eq, Callback, Html, Properties,
