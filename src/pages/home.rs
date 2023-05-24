@@ -26,8 +26,14 @@ struct ApiResponse {
     success: bool,
 }
 
+#[derive(Properties, PartialEq)]
+pub struct Props {
+    pub query: String,
+}
+
+
 #[function_component(Home)]
-pub fn home() -> Html {
+pub fn home(props: &Props) -> Html {
     let restaurants: UseStateHandle<Option<Restaurants>> = use_state_eq(|| None);
     {
         let restaurants = restaurants.clone();

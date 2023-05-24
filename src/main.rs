@@ -16,6 +16,8 @@ use pages::{
 enum Route {
     #[at("/")]
     Home,
+    #[at("/search/:query")]
+    Search { query: String },
     #[at("/about")]
     About,
     #[at("/create_account")]
@@ -35,7 +37,8 @@ enum Route {
 fn switch(routes: Route) -> Html {
     match routes {
         Route::About => html! { <About /> },
-        Route::Home => html! { <Home /> },
+        Route::Home => html! { <Home query="" /> },
+        Route::Search { query } => html! { <Home {query} /> },
         Route::Secure => html! { <Secure /> },
         Route::NotFound => html! { <NotFound /> },
         Route::Restaurant { name }=> html! { <Restaurant {name} />},
