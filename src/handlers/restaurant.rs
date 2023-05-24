@@ -7,24 +7,20 @@ use axum::{
     Json
 };
 
-
-use axum_login::axum_sessions::async_session::serde_json::value;
-use bson::{Array, RawArray};
 use futures::stream::StreamExt;
 
 use mongodb::{
-    bson::{Bson, doc, Document, oid::ObjectId, to_bson},
+    bson::{Bson, doc, Document},
     Client,
     Collection,
     options::{FindOneOptions, DeleteOptions, UpdateOptions, FindOptions},
 };
-use serde_with::rust::unwrap_or_skip;
 
 
-use crate::structs::restaurant::{Response, Restaurant, RestaurantDB, self};
+use crate::structs::restaurant::{Response, Restaurant, RestaurantDB};
 
 
-pub async fn create_restaurant(State(client): State<Client>,Json(mut rest): Json<Restaurant>) -> impl IntoResponse {
+pub async fn create_restaurant(State(client): State<Client>,Json(rest): Json<Restaurant>) -> impl IntoResponse {
 
     let rest_coll: Collection<RestaurantDB> = client
     .database("app_database")
@@ -128,7 +124,7 @@ async fn fetch_restaurant(client: Client, filter: Document) -> (StatusCode, Json
                         message.push_str(&message_part);
                     }
                     (StatusCode::NOT_FOUND, Json(Response {
-                        success: false,
+                        success: false, 
                         error_message: Some(format!("No restaurant exists for given filter: {}", message)),
                         data: None
                     }))
