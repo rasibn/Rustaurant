@@ -39,8 +39,8 @@ pub fn restaurant(props: &Props) -> Html {
     let user_reviews: UseStateHandle<Option<Vec<UserReview>>> = use_state_eq(|| None);
     let restaurant_info: UseStateHandle<Option<Rc<RestaurantInfo>>> = use_state_eq(|| 
         Some(Rc::new(RestaurantInfo {
-            name: String::from("Empty"),
-            description: String::from("Empty"),
+            name: String::from("Loading..."),
+            description: String::from("Loading..."),
             num_star: [0; 5],
         }))
     );

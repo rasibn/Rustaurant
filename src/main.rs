@@ -8,7 +8,7 @@ mod pages;
 mod components;
 
 use pages::{
-    about::About, home::Home, not_found::NotFound, restaurant::Restaurant, login::Login, create_account::CreateAccount
+    about::About, home::Home, not_found::NotFound, restaurant::Restaurant, login::Login, create_account::CreateAccount, redirecting::Redirecting
 };
 
 
@@ -18,6 +18,8 @@ enum Route {
     Home,
     #[at("/search/:query")]
     Search { query: String },
+    #[at("/redirecting/:route")]
+    Redirecting { route: String},
     #[at("/about")]
     About,
     #[at("/create_account")]
@@ -39,6 +41,7 @@ fn switch(routes: Route) -> Html {
         Route::About => html! { <About /> },
         Route::Home => html! { <Home query="" /> },
         Route::Search { query } => html! { <Home {query} /> },
+        Route::Redirecting {route} => html! { <Redirecting {route} /> },
         Route::Secure => html! { <Secure /> },
         Route::NotFound => html! { <NotFound /> },
         Route::Restaurant { name }=> html! { <Restaurant {name} />},
