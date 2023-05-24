@@ -50,7 +50,7 @@ pub fn review(props: &Props) -> Html {
                 {if *show_full_review { props.user_review.clone() } else { props.user_review.chars().take(200).collect::<String>() }}
             </p>
 
-            {if props.user_review.len() > 200 {
+            {if props.user_review.len() > 300 {
                 html! {
                     <button class="block mb-5 text-sm font-medium text-blue-600 hover:underline dark:text-blue-500" onclick={toggle_full_review}>
                         {if *show_full_review { "Read less" } else { "Read more" }}

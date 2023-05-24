@@ -10,8 +10,8 @@ pub struct Props {
     pub description: String,
 }
 
-#[function_component(Card)]
-pub fn card(props: &Props) -> Html {
+#[function_component(BigCard)]
+pub fn big_card(props: &Props) -> Html {
     let show_full_description = use_state(|| false);
 
     let toggle_description = {
@@ -24,16 +24,16 @@ pub fn card(props: &Props) -> Html {
     let description = if *show_full_description || props.description.len() <= 100 {
         &props.description
     } else {
-        &props.description[..100]
+        &props.description[..200]
     };
 
     html! {
         <Link<Route> to={Route::Restaurant { name: props.name.clone() }}>
-            <div class="max-w-xs min-h-40 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                <img class="rounded-t-lg" src={format!("/images/{}.jpg",props.name.clone())} alt={format!("Image for {}", &props.name)}/>
-                <div class="p-5">
-                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{ &props.name }</h5>
-                    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+            <div class="max-w-xs mx-auto bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800" style="width: 320px; height: 580px;">
+                <img class="rounded-t-lg text-primary" src={format!("/images/{}.jpg",props.name.clone())} alt={format!("Image for {}", &props.name)}/>
+                <div class="p-5 h-3/4">
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-primary">{ &props.name }</h5>
+                    <p class="mb-3 font-normal text-primary">
                         { description }
                         { render_read_more_button(*show_full_description, toggle_description, props.description.len() > 100) }
                     </p>

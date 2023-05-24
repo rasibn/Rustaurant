@@ -1,4 +1,4 @@
-use crate::components::card::Card;
+use crate::components::big_card::BigCard;
 use crate::components::layout::Layout;
 use crate::components::rating::Rating;
 use crate::components::review::Review;
@@ -88,8 +88,8 @@ pub fn restaurant(props: &Props) -> Html {
             <div class="flex mt-3 border-3 items-center">
                 <div class="flex-1">
                     <div class="flex flex-row">
-                        <div class="mr-10">
-                            <Card description={restaurant_info.description.clone()} name={restaurant_info.name.clone()} />
+                        <div class="mr-10 mt-4">
+                            <BigCard description={restaurant_info.description.clone()} name={restaurant_info.name.clone()} />
                         </div>
                         <div class="w-2/3">
                             <h1 class="mb-2 text-4xl font-bold leading-tight text-primary">{ &restaurant_info.name }</h1>
