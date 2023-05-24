@@ -63,7 +63,7 @@ async fn main() {
         .route("/users/name/:name/", get(user_from_username)) // GET USER BY USERNAME API
         .route("/users/update/",patch(update_user)) // UPDATE USER API
         .route("/restaurants/all/", get(fetch_all_restaurant)) // GET ALL RESTAURANTS API
-        .route("/restaurants/all/search/", get(fetch_restaurant_by_string)) // GET RESTAURANTS BY SEARCH API
+        .route("/restaurants/all/:search/", get(fetch_restaurant_by_string)) // GET RESTAURANTS BY SEARCH API
         .route("/restaurants/create/", post(create_restaurant)) // CREATE RESTAURANT API
         .route("/restaurants/:name/", get(restaurant_from_name)) // GET RESTAURANT BY NAME API
         .route("/restaurants/:name/reviews/", get(get_reviews_from_restaurant)) // GET REVIEWS FROM RESTAURANT BY NAME API

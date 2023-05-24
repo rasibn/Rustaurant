@@ -179,7 +179,7 @@ pub async fn fetch_all_restaurant(State(client): State<Client>) -> impl IntoResp
 
 }
 
-pub async fn fetch_restaurant_by_string(State(client): State<Client>,Json(mut rest): Json<Restaurant>) -> impl IntoResponse {
+pub async fn fetch_restaurant_by_string(State(client): State<Client>,Path(search):Path<String>) -> impl IntoResponse {
 
     let rest_coll: Collection<RestaurantDB> = client
     .database("app_database")
@@ -197,7 +197,7 @@ pub async fn fetch_restaurant_by_string(State(client): State<Client>,Json(mut re
             while let Some(doc) = value.next().await {
                 match doc {
                     Ok(doc) => {
-                        if doc.name.contains(&rest.name) {
+                        if doc.name.to_lowercase().contains(&search.to_lowercase()) {
                             restaurants.push(doc);
                         }
                     },
@@ -209,7 +209,13 @@ pub async fn fetch_restaurant_by_string(State(client): State<Client>,Json(mut re
                         }))
                     }
                 }}
-
+                if restaurants.len() == 0 {
+                    return (StatusCode::NOT_FOUND, Json(Response {
+                        success: false,
+                        error_message: Some(format!("No restaurants match the keyword")),
+                        data: None
+                    }))
+                }
             let response = Response {
                 success: true,
                 data: Some(restaurants),
