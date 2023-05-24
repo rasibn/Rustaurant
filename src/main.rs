@@ -24,7 +24,7 @@ use handlers::{
     common::{handler_404, root},
     mflix::{list_users, user_by_id, user_by_name, user_by_email},
     user::{create_user,delete_user,user_from_email,user_from_username,update_user},
-    restaurant::{create_restaurant,restaurant_from_name,fetch_all_restaurant},
+    restaurant::{create_restaurant,restaurant_from_name,fetch_all_restaurant,fetch_restaurant_by_string},
     reviews::{create_review,get_reviews_from_restaurant},
 };
 
@@ -47,16 +47,17 @@ async fn main() {
     // build our application with a route
     let app = Router::new()
         .route("/", get(root)) // `GET /` goes to `root`
-        .route("/users/create/", post(create_user))
-        .route("/users/delete/:email/", delete(delete_user))
-        .route("/users/email/:email/", get(user_from_email))
-        .route("/users/name/:name/", get(user_from_username)) // `POST /users` goes to `create_user`
-        .route("/users/update/",patch(update_user))
-        .route("/restaurants/all/", get(fetch_all_restaurant))
-        .route("/restaurants/create/", post(create_restaurant))
-        .route("/restaurants/:name/", get(restaurant_from_name))
-        .route("/restaurants/:name/reviews/", get(get_reviews_from_restaurant))
-        .route("/restaurants/:name/reviews/create/", post(create_review))
+        .route("/users/create/", post(create_user)) // CREATE USER API
+        .route("/users/delete/:email/", delete(delete_user)) // DELETE USER BY EMAIL API
+        .route("/users/email/:email/", get(user_from_email)) // GET USER BY EMAIL API
+        .route("/users/name/:name/", get(user_from_username)) // GET USER BY USERNAME API
+        .route("/users/update/",patch(update_user)) // UPDATE USER API
+        .route("/restaurants/all/", get(fetch_all_restaurant)) // GET ALL RESTAURANTS API
+        .route("/restaurants/all/search/", get(fetch_restaurant_by_string)) // GET RESTAURANTS BY SEARCH API
+        .route("/restaurants/create/", post(create_restaurant)) // CREATE RESTAURANT API
+        .route("/restaurants/:name/", get(restaurant_from_name)) // GET RESTAURANT BY NAME API
+        .route("/restaurants/:name/reviews/", get(get_reviews_from_restaurant)) // GET REVIEWS FROM RESTAURANT BY NAME API
+        .route("/restaurants/:name/reviews/create/", post(create_review)) // CREATE REVIEW API
         .route("/mflix/user/", get(list_users))
         .route("/mflix/user/id/:id/", get(user_by_id))
         .route("/mflix/user/name/:name/", get(user_by_name))
