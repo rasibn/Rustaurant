@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use std::cell::RefCell;
 use std::rc::Rc;
-use std::{clone, ops::Deref};
+use std::{ops::Deref};
 use wasm_bindgen::JsCast;
 use web_sys::{Event, HtmlInputElement};
 use yew::{
