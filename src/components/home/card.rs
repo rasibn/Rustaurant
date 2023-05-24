@@ -24,7 +24,7 @@ pub fn card(props: &Props) -> Html {
             <div class="max-w-xs min-h-40 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                 <img class="rounded-t-lg" src={format!("/images/{}.jpg", props.name.clone())} alt={format!("Image for {}", &props.name)}/>
                 <div class="p-5">
-                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{ &props.name }</h5>
+                    <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 text-primary">{ &props.name }</h5>
                     <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">{ &trimmed_description }</p>
                     { render_read_more_button(&props.description) }
                 </div>

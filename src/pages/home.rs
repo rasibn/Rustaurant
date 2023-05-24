@@ -84,9 +84,7 @@ pub fn home(props: &Props) -> Html {
     html! {
         <Layout>
             <div>
-                <div>
-                    <SearchInput {onsubmit} />
-                </div>
+                <SearchInput {onsubmit} />
                 { render_heading(props.query.clone()) }
                 {restaurant_card_list}
             </div>

@@ -74,10 +74,10 @@ pub fn write_a_review(props: &Props) -> Html {
     });
 
     html! {
-        <form class="bg-white shadow-md rounded-lg px-5 py-4">
+        <form class="bg-gray-800 shadow-md rounded-lg px-5 py-4">
         <div class={props_rc.borrow().review_exists.clone()}>
           <div class="w-2/3 mt-3">
-            <label for="small-input" class="mb- text-2xl font-normal tracking-tight text-gray-900 text-sm">
+            <label for="small-input" class="mb- text-2xl font-normal tracking-tight text-primary text-sm">
               {"Review Title"}
             </label>
             
@@ -91,7 +91,7 @@ pub fn write_a_review(props: &Props) -> Html {
             />
           <div>
 
-          <label for="large-input" class="mb-3 text-2xl font-normal tracking-tight text-gray-900 text-sm">
+          <label for="large-input" class="mb-3 text-2xl font-normal tracking-tight text-primary text-sm">
             {"My Review"}
           </label>
           <input
@@ -102,7 +102,7 @@ pub fn write_a_review(props: &Props) -> Html {
             class="block w-full p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           />
         </div>
-        <label for="my-dropdown" class="mb-3 text-2xl font-normal tracking-tight text-gray-900 text-sm">{"Select a rating (0-5):"}</label>
+        <label for="my-dropdown" class="mb-3 text-2xl font-normal tracking-tight text-primary text-sm">{"Select a rating (0-5):"}</label>
         <div class="flex flex-row">
           <input
             id="my-dropdown"

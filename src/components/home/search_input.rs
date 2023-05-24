@@ -27,7 +27,7 @@ pub fn search_input(props: &Props) -> Html {
     let search_value = cloned_search.clone();
 
     html! {
-        <form class="flex mx-16 mb-10 justify-center">
+        <form class="flex mx-16 mb-5 justify-center">
             <label for="search" class="sr-only">{"Search"}</label>
             <div class="relative w-1/2">
                 <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">

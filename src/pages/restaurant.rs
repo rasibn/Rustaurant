@@ -49,7 +49,7 @@ pub fn restaurant(props: &Props) -> Html {
             let user_reviews = user_reviews.clone();
             let restaurant_info = restaurant_info.clone();
             move |_| {
-                fetch_data_async(name, user_reviews, restaurant_info);
+                fetch_restuarant_data_async(name, user_reviews, restaurant_info);
             }
         },
         (), // Empty vector as the second argument
@@ -67,6 +67,13 @@ pub fn restaurant(props: &Props) -> Html {
             e.prevent_default();
             review_exists.set(value);
         })
+    };
+
+    let initial_user_review = UserReview {
+            user_rating: 5,
+            user_review_title: String::from("Initial Review"),
+            user_review: String::from("My own initial review goes here"),
+            user_name: String::from("User ME"),
     };
     
 
@@ -89,16 +96,7 @@ pub fn restaurant(props: &Props) -> Html {
                             <Rating is_loading={ false } num_star={ restaurant_info.num_star } />
                             <h3 class="mb-2 mt-3 text-3xl font-bold leading-tight text-primary">{"Write a review"}</h3>
                             <div class="w-3/4">
-                                <WriteAReview onsubmit={ onsubmit.clone() } hide_fn={ hide_fn.clone() } initial_user_review={
-                                    
-                                    UserReview {
-                                        user_rating: 5,
-                                        user_review_title: String::from("Initial Review"),
-                                        user_review: String::from("My own initial review goes here"),
-                                        user_name: String::from("User ME"),
-                                    }
-
-                                } review_exists={ *review_exists } />
+                                <WriteAReview onsubmit={ onsubmit.clone() } hide_fn={ hide_fn.clone() } initial_user_review={initial_user_review.clone()} review_exists={ *review_exists } />
                             </div>
                         </div>
                     </div>
@@ -111,7 +109,7 @@ pub fn restaurant(props: &Props) -> Html {
         </Layout>
     }
 }   
-fn fetch_data_async(name: String, user_reviews: UseStateHandle<Option<Vec<UserReview>>>, restaurant_info: UseStateHandle<Option<Rc<RestaurantInfo>>>) {
+fn fetch_restuarant_data_async(name: String, user_reviews: UseStateHandle<Option<Vec<UserReview>>>, restaurant_info: UseStateHandle<Option<Rc<RestaurantInfo>>>) {
         wasm_bindgen_futures::spawn_local(async move {
             let url_reviews = format!("http://localhost:3000/restaurants/{}/reviews/", name);
             let url_info = format!("http://localhost:3000/restaurants/{}/", name);
