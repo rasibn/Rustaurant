@@ -136,7 +136,7 @@ pub async fn get_reviews_from_restaurant(State(client): State<Client>, Path(name
                 all_review.push(doc.expect("could not load reviews info."));
             }
             (StatusCode::OK, Json(Response {
-                success: false,
+                success: true,
                 error_message: None,
                 data: Some(all_review)
             }))

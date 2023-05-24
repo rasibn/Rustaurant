@@ -1,3 +1,5 @@
+use std::string;
+
 use axum::{
     extract::{Path, Query, State},
     http::StatusCode,
@@ -147,21 +149,81 @@ pub async fn fetch_all_restaurant(State(client): State<Client>) -> impl IntoResp
 
     let options = FindOptions::default();
 
-    let mut restaurants_cursor = rest_coll
-        .find(None, options).await.expect("could not load restaurants info.");
+    let restaurants_cursor = rest_coll
+        .find(None, options).await;
 
-    let mut restaurants: Vec<RestaurantDB> = Vec::new();
-
-    while let Some(doc) = restaurants_cursor.next().await {
-        restaurants.push(doc.expect("could not load restaurant info."));
-    }
-
-    let response = Response {
-        success: true,
-        data: Some(restaurants),
-        error_message: None
-    };
-    (StatusCode::OK, Json(response))
+        match restaurants_cursor {
+            Ok(mut value) => {
+                let mut restaurants: Vec<RestaurantDB> = Vec::new();
+    
+                while let Some(doc) = value.next().await {
+                    restaurants.push(doc.expect("could not load restaurant info."));
+                }
+    
+                let response = Response {
+                    success: true,
+                    data: Some(restaurants),
+                    error_message: None
+                };
+                (StatusCode::OK, Json(response))
+            },
+            Err(err) => {
+                (StatusCode::NOT_FOUND, Json(Response {
+                    success: false,
+                    error_message: Some(format!("Couldn't find any restaurants due to {:#?}", err)),
+                    data: None
+                }))
+            }
+        }
 
 
 }
+
+pub async fn fetch_restaurant_by_string(State(client): State<Client>,Json(mut rest): Json<Restaurant>) -> impl IntoResponse {
+
+    let rest_coll: Collection<RestaurantDB> = client
+    .database("app_database")
+    .collection::<RestaurantDB>("restaurant");
+    
+    let options = FindOptions::default();
+
+    let restaurants_cursor = rest_coll
+        .find(None, options).await;
+
+    match restaurants_cursor {
+        Ok(mut value) => {
+            let mut restaurants: Vec<RestaurantDB> = Vec::new();
+
+            while let Some(doc) = value.next().await {
+                match doc {
+                    Ok(doc) => {
+                        if doc.name.contains(&rest.name) {
+                            restaurants.push(doc);
+                        }
+                    },
+                    Err(err) => {
+                        return (StatusCode::NOT_FOUND, Json(Response {
+                            success: false,
+                            error_message: Some(format!("Couldn't find any restaurants due to {:#?}", err)),
+                            data: None
+                        }))
+                    }
+                }}
+
+            let response = Response {
+                success: true,
+                data: Some(restaurants),
+                error_message: None,
+            };
+            (StatusCode::OK, Json(response))
+        },
+        Err(err) => {
+            (StatusCode::NOT_FOUND, Json(Response {
+                success: false,
+                error_message: Some(format!("Couldn't find any restaurants due to {:#?}", err)),
+                data: None
+            }))
+        }
+    }
+        
+    }
