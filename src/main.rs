@@ -81,6 +81,10 @@ async fn main() {
             .allow_methods(vec![Method::GET, Method::POST, Method::DELETE])
             // allow requests from any origin
             .allow_origin(Any)
+            .allow_headers(vec![
+                header::AUTHORIZATION,
+                header::CONTENT_TYPE, // Add this line to allow 'Content-Type'
+            ])
         )
 
         .layer(TraceLayer::new_for_http())
