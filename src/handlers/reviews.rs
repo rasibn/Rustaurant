@@ -11,7 +11,7 @@ use mongodb::{
     bson::{Bson, doc},
     Client,
     Collection,
-    options::{FindOneOptions, DeleteOptions, UpdateOptions, FindOptions},
+    options::{FindOneOptions, FindOptions},
 };
 use crate::structs::reviews::{Review, Response, self};
 use crate::structs::restaurant::{RestaurantDB};

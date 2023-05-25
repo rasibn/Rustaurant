@@ -1,5 +1,3 @@
-use std::string;
-
 use axum::{
     extract::{Path, Query, State},
     http::StatusCode,
@@ -11,7 +9,7 @@ use futures::stream::StreamExt;
 
 use mongodb::{
     bson::{doc, Bson, Document},
-    options::{DeleteOptions, FindOneOptions, FindOptions, UpdateOptions},
+    options::{FindOneOptions, FindOptions},
     Client, Collection,
 };
 
@@ -240,7 +238,13 @@ pub async fn fetch_restaurant_by_string(
                         )
                     }
                 }}
-
+                if restaurants.len() == 0 {
+                    return (StatusCode::NOT_FOUND, Json(Response {
+                        success: false,
+                        error_message: Some(format!("No restaurants match the keyword")),
+                        data: Some(vec![])
+                    }))
+                }
             let response = Response {
                 success: true,
                 data: Some(restaurants),

@@ -1,5 +1,5 @@
 use axum::{
-    routing::{get, post, delete, put,patch},
+    routing::{get, post, delete,patch},
     http::{header, HeaderValue},
     Router,
 };
@@ -16,7 +16,7 @@ use axum::http::{
 use tower_http::{
     set_header::SetResponseHeaderLayer,
     trace::TraceLayer,
-    cors::{CorsLayer, Any}
+    cors::Any
 };
 
 //use tower::{ServiceBuilder, ServiceExt, Service};
@@ -28,7 +28,6 @@ use structs::common::DatabaseConfig;
 
 use handlers::{
     common::{handler_404, root},
-    mflix::{list_users, user_by_id, user_by_name, user_by_email},
     user::{create_user,delete_user,user_from_email,user_from_username,update_user},
     restaurant::{create_restaurant,restaurant_from_name,fetch_all_restaurant,fetch_restaurant_by_string},
     reviews::{create_review,get_reviews_from_restaurant},
@@ -68,10 +67,6 @@ async fn main() {
         .route("/restaurants/:name/", get(restaurant_from_name)) // GET RESTAURANT BY NAME API
         .route("/restaurants/:name/reviews/", get(get_reviews_from_restaurant)) // GET REVIEWS FROM RESTAURANT BY NAME API
         .route("/restaurants/:name/reviews/create/", post(create_review)) // CREATE REVIEW API
-        .route("/mflix/user/", get(list_users))
-        .route("/mflix/user/id/:id/", get(user_by_id))
-        .route("/mflix/user/name/:name/", get(user_by_name))
-        .route("/mflix/user/email/:email/", get(user_by_email))
         // .route("/mflix/user/login/", post(login))
         // .route("/mflix/user/signup/", post(signup))
         // set cors
