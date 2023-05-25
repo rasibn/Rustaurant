@@ -11,16 +11,16 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
-    pub route: String,
     pub review_hex: String,
 }
 
 #[function_component(Submitting)]
 pub fn submitting(props: &Props) -> Html {
     let window = window().expect("Failed to retrieve window object");
-    let route = vec!["restaurant", "KFC"]; // Replace with your desired route
     let review_from_hex: UserReview = hex_to_struct(props.review_hex.as_str()).unwrap();
     let restaurant_name = review_from_hex.restaurant_name.clone();
+    let restaurant_name_cloned = review_from_hex.restaurant_name.clone();
+
     web_sys::console::log_1(&format!("Review from hex: {:?}", review_from_hex).into());
     use_effect_with_deps(
       move |_| {
@@ -50,10 +50,11 @@ pub fn submitting(props: &Props) -> Html {
                   Ok(response) => {
                       web_sys::console::log_1(&format!("Response: {:?}", response).into());
                       
-                      let redirect_url = format!("/{}/{}", route[0], route[1]);
+                      let redirect_url = format!("/restaurant/{}", restaurant_name_cloned);
                       web_sys::console::log_1(&format!("Redirecting to: {:?}", redirect_url).into());
-                    //    window.location().set_href(&redirect_url)
-                    //          .expect("Failed to redirect");
+                       
+                       window.location().set_href(&redirect_url)
+                             .expect("Failed to redirect");
                   }
                   Err(err) => {
                       // Handle the error when sending the request

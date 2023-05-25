@@ -20,8 +20,8 @@ enum Route {
     Search { query: String },
     #[at("/redirecting/:route")]
     Redirecting { route: String},
-    #[at("/submitting/:route/:review_hex")]
-    Submitting { route: String, review_hex: String},
+    #[at("/submitting/:review_hex")]
+    Submitting { review_hex: String},
     #[at("/about")]
     About,
     #[at("/create_account")]
@@ -43,7 +43,7 @@ fn switch(routes: Route) -> Html {
         Route::Search { query } => html! { <Home {query} /> },
         Route::SearchEmpty => html! { <Home query="" /> },
         Route::Redirecting {route} => html! { <Redirecting {route} /> },
-        Route::Submitting {route, review_hex} => html! { <Submitting {route} {review_hex} /> },
+        Route::Submitting {review_hex} => html! { <Submitting {review_hex} /> },
         Route::NotFound => html! { <NotFound /> },
         Route::Restaurant { name }=> html! { <Restaurant {name} />},
         Route::Login => html! { <Login /> },

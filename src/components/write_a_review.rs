@@ -119,7 +119,7 @@ pub fn write_a_review(props: &Props) -> Html {
                         class="block p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500"
                         name="my-dropdown"
                     />
-                    <Link<Route> to={Route::Submitting { route: format!("restaurant+{}", props.initial_user_review.restaurant_name), review_hex: user_review_hex }}>
+                    <Link<Route> to={Route::Submitting { review_hex: user_review_hex }}>
                     <div>
                         <input
                             onclick={onsubmit}

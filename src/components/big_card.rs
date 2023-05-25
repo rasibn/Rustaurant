@@ -29,11 +29,11 @@ pub fn big_card(props: &Props) -> Html {
 
     html! {
         <Link<Route> to={Route::Restaurant { name: props.name.clone() }}>
-            <div class="max-w-xs mx-auto bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800" style="width: 320px; height: 580px;">
+            <div class="max-w-xs mx-auto bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800" style="min-width: 320px; min-height: 580px;">
                 <img class="rounded-t-lg text-primary" src={format!("/images/{}.jpg",props.name.clone())} alt={format!("Image for {}", &props.name)}/>
                 <div class="p-5 h-3/4">
                     <h5 class="mb-2 text-2xl font-bold tracking-tight text-primary">{ &props.name }</h5>
-                    <p class="mb-3 font-normal text-primary">
+                    <p class="mb-3 ml-3 font-normal text-primary">
                         { description }
                         { render_read_more_button(*show_full_description, toggle_description, props.description.len() > 100) }
                     </p>
