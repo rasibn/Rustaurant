@@ -123,8 +123,8 @@ fn fetch_restaurants(query: String, restaurants: UseStateHandle<Option<Restauran
                 restaurants: vec![],
             }));
             return;
+            
         }
-
         restaurants.set(Some(Restaurants {
             restaurants: fetched_restaurants
                 .data
@@ -135,5 +135,6 @@ fn fetch_restaurants(query: String, restaurants: UseStateHandle<Option<Restauran
                 })
                 .collect(),
         }));
+
     });
 }
