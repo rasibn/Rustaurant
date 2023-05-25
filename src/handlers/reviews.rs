@@ -13,7 +13,7 @@ use mongodb::{
     Collection,
     options::{FindOneOptions, FindOptions},
 };
-use crate::structs::reviews::{Review, Response, self};
+use crate::structs::reviews::{Review, Response};
 use crate::structs::restaurant::{RestaurantDB};
 
 pub async fn create_review(State(client): State<Client>,Json(mut rest): Json<Review>) -> impl IntoResponse {
