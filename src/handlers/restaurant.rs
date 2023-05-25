@@ -209,13 +209,7 @@ pub async fn fetch_restaurant_by_string(State(client): State<Client>,Path(search
                         }))
                     }
                 }}
-                if restaurants.len() == 0 {
-                    return (StatusCode::NOT_FOUND, Json(Response {
-                        success: false,
-                        error_message: Some(format!("No restaurants match the keyword")),
-                        data: Some(vec![])
-                    }))
-                }
+
             let response = Response {
                 success: true,
                 data: Some(restaurants),
