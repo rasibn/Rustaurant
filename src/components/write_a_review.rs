@@ -8,6 +8,7 @@ use web_sys::{Event, HtmlInputElement};
 use crate::Route;
 use yew::prelude::*;
 use yew_router::prelude::Link;
+use crate::utils::struct_to_hex;
 
 #[derive(Properties, PartialEq, Clone)]
 pub struct Props {
@@ -17,10 +18,11 @@ pub struct Props {
     pub initial_user_review: UserReview,
 }
 
-#[derive(Debug, Deserialize, PartialEq, Clone)]
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 pub struct UserReview {
     pub user_rating: i32,
     pub user_review_title: String,
+    pub restaurant_name: String,
     pub user_review: String,
     pub user_name: String,
 }
@@ -63,8 +65,11 @@ pub fn write_a_review(props: &Props) -> Html {
         user_review_title: cloned_title.clone(),
         user_review: cloned_review.clone(),
         user_rating: cloned_rating.parse::<i32>().unwrap_or(-1),
+        restaurant_name: props.initial_user_review.restaurant_name.clone(),
         user_name: "John Doe".to_string(),
     };
+
+    let user_review_hex = struct_to_hex(&user_review);
 
     let props_rc = Rc::new(RefCell::new(props.clone()));
     let props_clone = props_rc.clone();
@@ -114,7 +119,7 @@ pub fn write_a_review(props: &Props) -> Html {
                         class="block p-2 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 sm:text-xs focus:ring-blue-500 focus:border-blue-500"
                         name="my-dropdown"
                     />
-                    <Link<Route> to={Route::Submitting { route: format!("restaurant+{}", "KFC") }}>
+                    <Link<Route> to={Route::Submitting { route: format!("restaurant+{}", props.initial_user_review.restaurant_name), review_hex: user_review_hex }}>
                     <div>
                         <input
                             onclick={onsubmit}

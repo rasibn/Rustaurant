@@ -3,6 +3,7 @@ use yew_router::prelude::*;
 use crate::components::write_a_review::UserReview;
 mod pages;
 mod components;
+mod utils;
 
 use pages::{
     about::About, home::Home, not_found::NotFound, restaurant::Restaurant, login::Login, create_account::CreateAccount, redirecting::Redirecting, submitting::Submitting
@@ -13,20 +14,20 @@ use pages::{
 enum Route {
     #[at("/")]
     Home,
+    #[at("/search")]
+    SearchEmpty,
     #[at("/search/:query")]
     Search { query: String },
     #[at("/redirecting/:route")]
     Redirecting { route: String},
-    #[at("/submitting/:route")]
-    Submitting { route: String},
+    #[at("/submitting/:route/:review_hex")]
+    Submitting { route: String, review_hex: String},
     #[at("/about")]
     About,
     #[at("/create_account")]
     CreateAccount,
     #[at("/login")]
     Login,
-    #[at("/secure")]
-    Secure,
     #[not_found]
     #[at("/404")]
     NotFound,
@@ -40,16 +41,9 @@ fn switch(routes: Route) -> Html {
         Route::About => html! { <About /> },
         Route::Home => html! { <Home query="" /> },
         Route::Search { query } => html! { <Home {query} /> },
+        Route::SearchEmpty => html! { <Home query="" /> },
         Route::Redirecting {route} => html! { <Redirecting {route} /> },
-        Route::Submitting {route} => html! { <Submitting {route} review={
-            UserReview {
-                user_review_title: "Title".to_string(),
-                user_review: "Review".to_string(),
-                user_rating: 5,
-                user_name: "John Doe".to_string(),
-            }
-        } /> },
-        Route::Secure => html! { <Secure /> },
+        Route::Submitting {route, review_hex} => html! { <Submitting {route} {review_hex} /> },
         Route::NotFound => html! { <NotFound /> },
         Route::Restaurant { name }=> html! { <Restaurant {name} />},
         Route::Login => html! { <Login /> },
@@ -65,21 +59,6 @@ fn app() -> Html {
         </BrowserRouter>
     }
 }
-
-
-#[function_component(Secure)]
-fn secure() -> Html {
-    let navigator = use_navigator().unwrap();
-
-    let onclick = Callback::from(move |_| navigator.push(&Route::Home));
-    html! {
-        <div>
-            <h1>{ "Secure" }</h1>
-            <button {onclick}>{ "Go Home" }</button>
-        </div>
-    }
-}
-
 
 fn main() {
     yew::Renderer::<App>::new().render();

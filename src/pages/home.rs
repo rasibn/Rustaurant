@@ -39,11 +39,12 @@ pub fn home(props: &Props) -> Html {
         {
             let query = props.query.clone();
             let restaurants = restaurants.clone();
+
             move |_| {
                 fetch_restaurants(query, restaurants);
             }
         },
-        (), // Empty vector as the second argument
+        (),
     );
 
     let restaurant_card_list = match restaurants.as_ref() {
@@ -63,17 +64,7 @@ pub fn home(props: &Props) -> Html {
                 </div>
             }
         }
-        Some(_) => {
-            html! {
-                <div class="flex justify-center items-center h-screen">
-                    <div class="inline-flex space-x-4">
-                        <div class="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
-                        <div class="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
-                        <div class="w-3 h-3 bg-blue-500 rounded-full animate-bounce"></div>
-                    </div>
-                </div>
-            }
-        }
+        Some(_) => html! {},
         None => html! {},
     };
 
@@ -123,7 +114,6 @@ fn fetch_restaurants(query: String, restaurants: UseStateHandle<Option<Restauran
                 restaurants: vec![],
             }));
             return;
-            
         }
         restaurants.set(Some(Restaurants {
             restaurants: fetched_restaurants
@@ -135,6 +125,5 @@ fn fetch_restaurants(query: String, restaurants: UseStateHandle<Option<Restauran
                 })
                 .collect(),
         }));
-
     });
 }

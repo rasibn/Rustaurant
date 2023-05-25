@@ -6,28 +6,20 @@ use yew_router::prelude::Link;
 use gloo_net::http::Request;
 use web_sys::window;
 use crate::components::write_a_review::UserReview;
+use crate::utils::hex_to_struct;
 use serde::{Deserialize, Serialize};
 
 #[derive(Properties, PartialEq)]
 pub struct Props {
     pub route: String,
-    pub review: UserReview,
-}
-
-#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
-struct UserReviewForPost {
-  pub user_rating: i32,
-  pub user_review_title: String,
-  pub restaurant_name: String,
-  pub user_review: String,
-  pub user_name: String,
+    pub review_hex: String,
 }
 
 #[function_component(Submitting)]
 pub fn submitting(props: &Props) -> Html {
     let window = window().expect("Failed to retrieve window object");
     let route = vec!["restaurant", "KFC"]; // Replace with your desired route
-    let review_cloned: UserReview = props.review.clone();
+    let review_from_hex: UserReview = hex_to_struct(props.review_hex.as_str()).unwrap();
 
     use_effect_with_deps(
       move |_| {
@@ -35,12 +27,12 @@ pub fn submitting(props: &Props) -> Html {
 
           let post_url = format!("http://localhost:3000/restaurants/{}/reviews/create/", restaurant_name);
           
-          let review_to_post = UserReviewForPost {
-              user_rating: review_cloned.user_rating,
-              user_review_title: review_cloned.user_review_title,
+          let review_to_post = UserReview {
+              user_rating: review_from_hex.user_rating,
+              user_review_title: review_from_hex.user_review_title,
               restaurant_name: restaurant_name,
-              user_review: review_cloned.user_review,
-              user_name: review_cloned.user_name,
+              user_review: review_from_hex.user_review,
+              user_name: review_from_hex.user_name,
           };
 
           wasm_bindgen_futures::spawn_local(async move {

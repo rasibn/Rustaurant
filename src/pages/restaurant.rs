@@ -92,6 +92,7 @@ pub fn restaurant(props: &Props) -> Html {
                                     UserReview {
                                         user_rating: 5,
                                         user_review_title: String::from(""),
+                                        restaurant_name: props.name.clone(),
                                         user_review: String::from(""),
                                         user_name: String::from(""),
                                     }
