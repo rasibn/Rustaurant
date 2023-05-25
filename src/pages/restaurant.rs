@@ -46,7 +46,7 @@ pub fn restaurant(props: &Props) -> Html {
     use_effect_with_deps(
         {
             let name = props.name.clone();
-            let user_reviews = user_reviews.clone();
+            let user_reviews: UseStateHandle<Option<Vec<UserReview>>> = user_reviews.clone();
             let restaurant_info = restaurant_info.clone();
             move |_| {
                 fetch_restuarant_data_async(name, user_reviews, restaurant_info);
@@ -67,15 +67,7 @@ pub fn restaurant(props: &Props) -> Html {
             e.prevent_default();
             review_exists.set(value);
         })
-    };
-
-    let initial_user_review = UserReview {
-            user_rating: 5,
-            user_review_title: String::from("Initial Review"),
-            user_review: String::from("My own initial review goes here"),
-            user_name: String::from("User ME"),
-    };
-    
+    };  
 
     let onsubmit = Callback::from(move |user_review: UserReview| {
         web_sys::console::log_1(&format!("UserReview: {:?}", user_review.user_rating).into());
@@ -96,7 +88,14 @@ pub fn restaurant(props: &Props) -> Html {
                             <Rating is_loading={ false } num_star={ restaurant_info.num_star } />
                             <h3 class="mb-2 mt-3 text-3xl font-bold leading-tight text-primary">{"Write a review"}</h3>
                             <div class="w-3/4">
-                                <WriteAReview onsubmit={ onsubmit.clone() } hide_fn={ hide_fn.clone() } initial_user_review={initial_user_review.clone()} review_exists={ *review_exists } />
+                                <WriteAReview onsubmit={ onsubmit.clone() } hide_fn={ hide_fn.clone() } initial_user_review={
+                                    UserReview {
+                                        user_rating: 5,
+                                        user_review_title: String::from(""),
+                                        user_review: String::from(""),
+                                        user_name: String::from(""),
+                                    }
+                                } review_exists={ *review_exists } />
                             </div>
                         </div>
                     </div>
@@ -109,36 +108,79 @@ pub fn restaurant(props: &Props) -> Html {
         </Layout>
     }
 }   
-fn fetch_restuarant_data_async(name: String, user_reviews: UseStateHandle<Option<Vec<UserReview>>>, restaurant_info: UseStateHandle<Option<Rc<RestaurantInfo>>>) {
-        wasm_bindgen_futures::spawn_local(async move {
-            let url_reviews = format!("http://localhost:3000/restaurants/{}/reviews/", name);
-            let url_info = format!("http://localhost:3000/restaurants/{}/", name);
 
-            let reviews_response = Request::get(&url_reviews)
-                .send()
-                .await
-                .unwrap()
-                .json::<serde_json::Value>()
-                .await
-                .unwrap();
+async fn fetch_restuarant_data_async(
+    name: String,
+    user_reviews: UseStateHandle<Option<Vec<UserReview>>>,
+    restaurant_info: UseStateHandle<Option<Rc<RestaurantInfo>>>,
+) {
+    wasm_bindgen_futures::spawn_local(async move {
+        let url_reviews = format!("http://localhost:3000/restaurants/{}/reviews/", name);
+        let url_info = format!("http://localhost:3000/restaurants/{}/", name);
 
-            let info_response = Request::get(&url_info)
-                .send()
-                .await
-                .unwrap()
-                .json::<serde_json::Value>()
-                .await
-                .unwrap();
+        let reviews_response = match Request::get(&url_reviews).send().await {
+            Ok(response) => response,
+            Err(error) => {
+                // Handle the error, e.g., log or display an error message
+                web_sys::console::error_1(&format!("Error fetching reviews: {:?}", error).into());
+                return;
+            }
+        };
 
-            let fetched_reviews = from_value::<ApiResponseForReviews>(reviews_response).unwrap();
-            let fetched_info = from_value::<ApiResponseForInfo>(info_response).unwrap();
+        let info_response = match Request::get(&url_info).send().await {
+            Ok(response) => response,
+            Err(error) => {
+                // Handle the error, e.g., log or display an error message
+                web_sys::console::error_1(&format!("Error fetching restaurant info: {:?}", error).into());
+                return;
+            }
+        };
 
-            web_sys::console::log_1(&format!("Fetched reviews: {:?}", fetched_reviews).into());
-            web_sys::console::log_1(&format!("Fetched info: {:?}", fetched_info).into());
+        if !reviews_response.ok() || !info_response.ok() {
+            // Handle non-OK responses, e.g., log or display an error message
+            web_sys::console::error_1(&format!("Non-OK response received: reviews={:?}, info={:?}", reviews_response, info_response).into());
+            return;
+        }
 
-            user_reviews.set(Some(fetched_reviews.data));
-            restaurant_info.set(Some(Rc::new(fetched_info.data[0].clone())));
-        });
+        let reviews_json = match reviews_response.json::<serde_json::Value>().await {
+            Ok(json) => json,
+            Err(error) => {
+                // Handle the error, e.g., log or display an error message
+                web_sys::console::error_1(&format!("Error parsing reviews JSON: {:?}", error).into());
+                return;
+            }
+        };
+
+        let info_json = match info_response.json::<serde_json::Value>().await {
+            Ok(json) => json,
+            Err(error) => {
+                // Handle the error, e.g., log or display an error message
+                web_sys::console::error_1(&format!("Error parsing info JSON: {:?}", error).into());
+                return;
+            }
+        };
+
+        let fetched_reviews = match from_value::<ApiResponseForReviews>(reviews_json) {
+            Ok(reviews) => reviews,
+            Err(error) => {
+                // Handle the error, e.g., log or display an error message
+                web_sys::console::error_1(&format!("Error deserializing reviews: {:?}", error).into());
+                return;
+            }
+        };
+
+        let fetched_info = match from_value::<ApiResponseForInfo>(info_json) {
+            Ok(info) => info,
+            Err(error) => {
+                // Handle the error, e.g., log or display an error message
+                web_sys::console::error_1(&format!("Error deserializing info: {:?}", error).into());
+                return;
+            }
+        };
+
+        user_reviews.set(Some(fetched_reviews.data));
+        restaurant_info.set(Some(Rc::new(fetched_info.data[0].clone())));
+    });
 }
 
 fn render_reviews(user_reviews: Option<&Vec<UserReview>>) -> Html {

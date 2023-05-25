@@ -5,3 +5,4 @@ pub mod restaurant;
 pub mod login;
 pub mod create_account;
 pub mod redirecting;
+pub mod submitting;
