@@ -20,11 +20,10 @@ pub fn submitting(props: &Props) -> Html {
     let window = window().expect("Failed to retrieve window object");
     let route = vec!["restaurant", "KFC"]; // Replace with your desired route
     let review_from_hex: UserReview = hex_to_struct(props.review_hex.as_str()).unwrap();
-
+    let restaurant_name = review_from_hex.restaurant_name.clone();
+    web_sys::console::log_1(&format!("Review from hex: {:?}", review_from_hex).into());
     use_effect_with_deps(
       move |_| {
-          let restaurant_name = "KFC".to_string(); //TODO: remove hardcoded restaurant name
-
           let post_url = format!("http://localhost:3000/restaurants/{}/reviews/create/", restaurant_name);
           
           let review_to_post = UserReview {
@@ -53,8 +52,8 @@ pub fn submitting(props: &Props) -> Html {
                       
                       let redirect_url = format!("/{}/{}", route[0], route[1]);
                       web_sys::console::log_1(&format!("Redirecting to: {:?}", redirect_url).into());
-                       window.location().set_href(&redirect_url)
-                             .expect("Failed to redirect");
+                    //    window.location().set_href(&redirect_url)
+                    //          .expect("Failed to redirect");
                   }
                   Err(err) => {
                       // Handle the error when sending the request
