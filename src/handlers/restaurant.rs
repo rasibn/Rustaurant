@@ -205,7 +205,7 @@ pub async fn fetch_restaurant_by_string(State(client): State<Client>,Path(search
                         return (StatusCode::NOT_FOUND, Json(Response {
                             success: false,
                             error_message: Some(format!("Couldn't find any restaurants due to {:#?}", err)),
-                            data: None
+                            data: Some(vec![])
                         }))
                     }
                 }}
@@ -213,7 +213,7 @@ pub async fn fetch_restaurant_by_string(State(client): State<Client>,Path(search
                     return (StatusCode::NOT_FOUND, Json(Response {
                         success: false,
                         error_message: Some(format!("No restaurants match the keyword")),
-                        data: None
+                        data: Some(vec![])
                     }))
                 }
             let response = Response {
@@ -227,7 +227,7 @@ pub async fn fetch_restaurant_by_string(State(client): State<Client>,Path(search
             (StatusCode::NOT_FOUND, Json(Response {
                 success: false,
                 error_message: Some(format!("Couldn't find any restaurants due to {:#?}", err)),
-                data: None
+                data: Some(vec![]),
             }))
         }
     }
