@@ -16,7 +16,7 @@ use mongodb::{
 use crate::structs::reviews::{Review, Response, self};
 use crate::structs::restaurant::{RestaurantDB};
 
-pub async fn create_review(State(client): State<Client>,Json(rest): Json<Review>) -> impl IntoResponse {
+pub async fn create_review(State(client): State<Client>,Json(mut rest): Json<Review>) -> impl IntoResponse {
     let review_coll: Collection<Review> = client
     .database("app_database")
     .collection::<Review>("reviews");
@@ -24,11 +24,12 @@ pub async fn create_review(State(client): State<Client>,Json(rest): Json<Review>
     let rating:usize = rest.user_rating as usize;
 
     if rating > 5 || rating < 1 {
-        return (StatusCode::BAD_REQUEST, Json(Response {
-            success: false,
-            error_message: Some("Rating must be between 1 and 5".to_string()),
-            data: None
-        }))
+        rest.user_rating = 5;
+        // return (StatusCode::BAD_REQUEST, Json(Response {
+        //     success: false,
+        //     error_message: Some("Rating must be between 1 and 5".to_string()),
+        //     data: None
+        // }))
     }
 
     let filter = doc! {
