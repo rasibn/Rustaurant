@@ -131,7 +131,7 @@ pub fn write_a_review(props: &Props) -> Html {
                     </Link<Route>>
                 </div>
                 <div class={if cloned_rating.parse::<i32>().unwrap_or(-1) < 1 || cloned_rating.parse::<i32>().unwrap_or(-1) > 5 {"block"} else {"hidden"}}>
-                    <p class="text-red-500 text-xs italic">{"Please choose a rating between 1 and 5"}</p>
+                    <p class="text-red-500 text-xs italic mt-2">{"Please choose a rating between 1 and 5; otherwise, I will assume it's 5!"}</p>
                 </div>
             </div>
             <div class={if props_rc.borrow().review_exists.clone() == "block" {"hidden"} else {"block"}}>
