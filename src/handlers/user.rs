@@ -1,25 +1,25 @@
 use axum::{
-    extract::{Path, Query, State},
+    extract::{Path, State},
     http::StatusCode,
     response::IntoResponse,
     Json
 };
 
-use axum_login::axum_sessions::async_session::serde_json::value;
-use futures::stream::StreamExt;
+
+
 
 use mongodb::{
-    bson::{Bson, doc, Document, oid::ObjectId,},
+    bson::{Bson, doc, Document,},
     Client,
     Collection,
     options::{FindOneOptions, DeleteOptions, UpdateOptions},
 };
 
 
-use crate::structs::user::{Response, User, self};
+use crate::structs::user::{Response, User};
 
 extern crate bcrypt;
-use bcrypt::{hash, verify, DEFAULT_COST};
+use bcrypt::{hash, DEFAULT_COST};
 // use axum::{
 //     http::StatusCode,
 //     Json
@@ -48,7 +48,7 @@ pub async fn create_user(State(client): State<Client>,Json(mut payload): Json<Us
     match cursor {
         Ok(value) => {
             match value {
-                Some(user) => return {
+                Some(_user) => return {
                     (StatusCode::FOUND, Json(Response {
                         success: false,
                         error_message: Some("User already exists".to_string()),

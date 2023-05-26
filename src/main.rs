@@ -45,15 +45,17 @@ async fn main() {
     tracing_subscriber::fmt::init();
 
     let database_config = DatabaseConfig::new();
-    let mut client_options = ClientOptions::parse(database_config.uri).await.unwrap();
+    let mut client_options = ClientOptions::parse(database_config.uri).await.expect("Error parsing database uri");
+
+    
     client_options.connect_timeout = database_config.connection_timeout;
     client_options.max_pool_size = database_config.max_pool_size;
     client_options.min_pool_size = database_config.min_pool_size;
     // the server will select the algorithm it supports from the list provided by the driver
     client_options.compressors = database_config.compressors;
-    let client = Client::with_options(client_options).unwrap();
+    let client = Client::with_options(client_options).expect("Error creating client");
 
-    // build our application with a route
+        // build our application with a route
     let app = Router::new()
         .route("/", get(root)) // `GET /` goes to `root`
         .route("/users/create/", post(create_user)) // CREATE USER API

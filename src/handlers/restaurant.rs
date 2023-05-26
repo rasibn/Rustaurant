@@ -1,5 +1,5 @@
 use axum::{
-    extract::{Path, Query, State},
+    extract::{Path, State},
     http::StatusCode,
     response::IntoResponse,
     Json,
@@ -39,7 +39,7 @@ pub async fn create_restaurant(
 
     match cursor {
         Ok(value) => match value {
-            Some(restaurant) => {
+            Some(_restaurant) => {
                 return {
                     (
                         StatusCode::FOUND,
