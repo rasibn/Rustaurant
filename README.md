@@ -11,7 +11,5 @@ trunk serve
 ```
 
 ## Preview
-
-![images](https://github.com/Rasib0/Rustaurant/blob/master/images/1.png?raw=true)
-
-![images](https://github.com/Rasib0/Rustaurant/blob/master/images/2.png?raw=true)
+  <img src="https://github.com/Rasib0/Rustaurant/blob/master/images/1.png?raw=true" alt="Image 1" style="width: 49%;">
+  <img src="https://github.com/Rasib0/Rustaurant/blob/master/images/2.png?raw=true" alt="Image 1" style="width: 49%;">
