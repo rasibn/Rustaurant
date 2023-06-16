@@ -1,33 +1,38 @@
 # Rustaurant
+Where safety, performance, and great food come together on a digital plate! Bon appétit! 🍽️🦀
 
-The frontend for a restaurant browsing website, built using rust's Yew framework.
+## Overview
+Rustaurant is a restaurant browsing website built with Rust's Yew framework. It combines the power of Rust with the joy of exploring dining options.
 
-The backend for the project is bulit using Axum.
+The backend for this project is built using Axum, a Rust web framework that ensures efficient and reliable performance. You can find the backend code [here](https://github.com/Rasib0/Rustaurant-server/).
 
-# Quickstart
-
+## Quickstart
+To get started, simply run the following command:
 ```
 trunk serve
 ```
+
 ## Features
-Pages: Home, Restaurant Details, About, Sign In, Sign Up
+Rustaurant offers the following key features:
 
 ### Home
 - Fetches basic restaurant data from MongoDB hosted on Atlas and displays them in a grid.
-- Includes a search component that queries the database based on the input string.
+- Includes a search component that allows users to query the database based on their input.
 
 ### Restaurant Details
-- Displays detailed information about the restaurant.
-- Includes a rating component with dynamic ratings that update when a new review is posted.
-- Includes a write-a-review component with user-friendly error messages (e.g., rating out of bounds).
-- Added a loading animation when submitting a review from the write-a-review component.
-- Added small quality of life (QOL) features such as a "Read More" button to prevent content overflow for users with smaller screens.
+- Provides detailed information about each restaurant.
+- Includes a dynamic rating component that updates in real-time when users post new reviews.
+- Features a user-friendly write-a-review component with error messages for rating validation.
+- Enhancements such as a loading animation when submitting a review and a "Read More" button to prevent content overflow on smaller screens improve the user experience.
 
 ### About
-- A static page that displays the terms and services and introduces the team behind the website.
+- A static page that showcases the terms and services of Rustaurant.
+- Introduces the talented team behind the development of this website.
 
 ## Preview
-<div style="display: flex;">
-  <img src="https://github.com/Rasib0/Rustaurant/blob/master/images/1.png?raw=true" alt="Image 1" style="width: 49%;">
-  <img src="https://github.com/Rasib0/Rustaurant/blob/master/images/2.png?raw=true" alt="Image 2" style="width: 49%;">
-</div>
+Here are a couple of preview images to give you a glimpse of Rustaurant in action:
+
+![Image 1](https://github.com/Rasib0/Rustaurant/blob/master/images/1.png?raw=true)
+![Image 2](https://github.com/Rasib0/Rustaurant/blob/master/images/2.png?raw=true)
+
+Feel free to explore, contribute, and enjoy the flavorful journey through Rustaurant!
