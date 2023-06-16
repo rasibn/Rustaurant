@@ -31,8 +31,8 @@ Rustaurant offers the following key features:
 
 ## Preview
 Here are a couple of preview images to give you a glimpse of Rustaurant in action:
-
-![Image 1](https://github.com/Rasib0/Rustaurant/blob/master/images/1.png?raw=true)
-![Image 2](https://github.com/Rasib0/Rustaurant/blob/master/images/2.png?raw=true)
-
+<div style="display: flex;">
+  <img src="https://github.com/Rasib0/Rustaurant/blob/master/images/1.png?raw=true" alt="Image 1" style="width: 49%;">
+  <img src="https://github.com/Rasib0/Rustaurant/blob/master/images/2.png?raw=true" alt="Image 2" style="width: 49%;">
+</div>
 Feel free to explore, contribute, and enjoy the flavorful journey through Rustaurant!
