@@ -1,3 +1,7 @@
-/target
-.env
-.vscode
+backend/target
+backend/.env
+backend/.vscode
+
+frontend/target/*
+frontend/dist/*
+frontend/!dist/index.css
